@@ -13,7 +13,7 @@ import os
 class Bot(object):
     def __init__(self):
         self.process_name = "WoW.exe"
-        if self.check_process():
+        if not self.check_process():
             os._exit(-1)
         self.start_x = -1
         self.start_y = -1
