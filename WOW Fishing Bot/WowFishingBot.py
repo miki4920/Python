@@ -14,7 +14,7 @@ class Bot(object):
     def __init__(self):
         self.process_name = "WoW.exe"
         if not self.check_process():
-            os._exit(-1)
+            os._exit(0)
         self.start_x = -1
         self.start_y = -1
         self.current_x = -1
@@ -138,7 +138,7 @@ class Bot(object):
 
     def end_program(self, key):
         if keyboard.Key.f9 == key:
-            os._exit(-1)
+            os._exit(0)
         else:
             pass
 
