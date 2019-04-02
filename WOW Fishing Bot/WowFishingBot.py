@@ -13,8 +13,9 @@ import os
 class Bot(object):
     def __init__(self):
         self.process_name = "WoW.exe"
-        if not self.check_process():
+        if self.check_process():
             os._exit(0)
+        pyautogui.PAUSE = 0.001
         self.start_x = -1
         self.start_y = -1
         self.current_x = -1
@@ -101,12 +102,12 @@ class Bot(object):
                 self.current_x = self.start_x
                 self.current_y = self.start_y
                 pyautogui.keyDown("1")
-                time.sleep(0.1)
+                time.sleep(0.05)
                 pyautogui.keyUp("1")
                 self.caught = False
                 while True:
-                    pyautogui.moveTo(self.current_x, self.current_y)
-                    pixel = ImageGrab.grab().load()[1165, 619]
+                    pyautogui.moveTo(self.current_x, self.current_y, 0.01)
+                    pixel = ImageGrab.grab().getpixel((1165, 619))
                     red = pixel[0]
                     green = pixel[1]
                     blue = pixel[2]
