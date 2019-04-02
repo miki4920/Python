@@ -13,7 +13,7 @@ import os
 class Bot(object):
     def __init__(self):
         self.process_name = "WoW.exe"
-        if not self.check_process():
+        if self.check_process():
             os._exit(0)
         self.start_x = -1
         self.start_y = -1
@@ -25,6 +25,7 @@ class Bot(object):
         self.pixel_colour = []
         self.step = 20
         self.caught = False
+        self.changed = False
 
         self.master = tk.Tk()
         self.get_resolution()
@@ -70,17 +71,20 @@ class Bot(object):
         button.grid(column=50, row=1)
 
     def set_coordinates(self):
-        with Listener(on_move=self.do_nothing(), on_click=self.click, on_scroll=self.do_nothing()) as listener:
+        listener = Listener(on_move=self.do_nothing(), on_click=self.click, on_scroll=self.do_nothing())
+        with listener:
             listener.join()
 
     def click(self, x, y, button, pressed, ):
         if pressed:
-            if self.start_x == -1:
+            if not self.changed:
                 self.start_x = x
                 self.start_y = y
-            elif self.end_x == -1:
+                self.changed = True
+            elif self.changed:
                 self.end_x = x
                 self.end_y = y
+                self.changed = False
                 return False
 
     def do_nothing(self, *args):
@@ -91,6 +95,7 @@ class Bot(object):
         button.grid(column=50, row=2)
 
     def pixel_checker(self):
+        self.master.destroy()
         with keyboard.Listener(on_release=self.do_nothing, on_press=self.end_program):
             while True:
                 self.current_x = self.start_x
