@@ -7,13 +7,14 @@ import numpy as np
 import sounddevice as sd
 import time
 import psutil
+import os
 
 
 class Bot(object):
     def __init__(self):
         self.process_name = "WoW.exe"
-        if not self.check_process():
-            quit()
+        if self.check_process():
+            os._exit(-1)
         self.start_x = -1
         self.start_y = -1
         self.current_x = -1
@@ -137,7 +138,7 @@ class Bot(object):
 
     def end_program(self, key):
         if keyboard.Key.f9 == key:
-            quit()
+            os._exit(-1)
         else:
             pass
 
