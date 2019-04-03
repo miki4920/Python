@@ -13,7 +13,7 @@ import os
 class Bot(object):
     def __init__(self):
         self.process_name = "WoW.exe"
-        if self.check_process():
+        if not self.check_process():
             os._exit(0)
         pyautogui.PAUSE = 0.001
         self.start_x = -1
