@@ -15,7 +15,7 @@ class Bot(object):
         self.process_name = "WoW.exe"
         if not self.check_process():
             os._exit(0)
-        pyautogui.PAUSE = 0.001
+        pyautogui.PAUSE = 0.01
         self.start_x = -1
         self.start_y = -1
         self.current_x = -1
@@ -138,7 +138,7 @@ class Bot(object):
 
     def detect_sound(self, indata, *args):
         volume = int(np.linalg.norm(indata)*10)*10
-        if volume > 20 and not self.caught:
+        if volume > 10 and not self.caught:
             pyautogui.click()
             self.caught = True
 
