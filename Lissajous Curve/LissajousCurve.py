@@ -23,13 +23,13 @@ def y_coordinate(b, steps, step_size):
     return coordinate_list
 
 
-steps = 1000000
-step_size = 0.001
-a = 56
-b = 55
-delta = math.pi/4
+steps = 100000
+step_size = 0.01
+a = 5
+b = 6
+delta = math.pi/6
 x = x_coordinate(a, delta, steps, step_size)
 y = y_coordinate(b, steps, step_size)
-for i in range(0, 1000000):
+for i in range(0, steps):
     Jonathan.goto(x[i], y[i])
 
