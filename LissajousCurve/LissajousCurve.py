@@ -10,7 +10,7 @@ Jonathan.speed(0)
 def x_coordinate(a, delta, steps, step_size):
     coordinate_list = []
     for step in range(0, steps):
-        coordinate = 200*math.sin(step_size*(a*step + delta))
+        coordinate = 250*math.sin(step_size*(a*step + delta))
         coordinate_list.append(coordinate)
     return coordinate_list
 
@@ -18,7 +18,7 @@ def x_coordinate(a, delta, steps, step_size):
 def y_coordinate(b, steps, step_size):
     coordinate_list = []
     for step in range(0, steps):
-        coordinate = 200*math.sin(step*b*step_size)
+        coordinate = 250*math.sin(step*b*step_size)
         coordinate_list.append(coordinate)
     return coordinate_list
 
