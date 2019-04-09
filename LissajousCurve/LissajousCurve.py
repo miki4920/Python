@@ -25,8 +25,8 @@ def y_coordinate(b, steps, step_size):
 
 steps = 100000
 step_size = 0.01
-a = 5
-b = 6
+a = 45
+b = 44
 delta = math.pi/6
 x = x_coordinate(a, delta, steps, step_size)
 y = y_coordinate(b, steps, step_size)
