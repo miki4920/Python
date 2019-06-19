@@ -2,14 +2,15 @@ import turtle
 import random
 import math
 
+
 class ConfettiDrawer(object):
     def __init__(self):
         self.Mark = turtle.Turtle()
         self.Mark.speed(0)
         self.screen = turtle.Screen()
         self.circle_list = []
-        self.circle_number = 1000
-        self.radius = 20
+        self.circle_number = 10000
+        self.radius = 25
         self.counter = 0
         self.generate_circles()
         self.screen.exitonclick()
@@ -38,8 +39,8 @@ class ConfettiDrawer(object):
                 self.Mark.penup()
                 self.Mark.goto(x, y)
                 self.Mark.pendown()
-                self.Mark.dot(self.radius*2)
-                print(coordinates)
+                self.Mark.dot(self.radius*2, "#" + "%06x" % random.randint(0, 0xFFFFFF))
+
 
 
 app = ConfettiDrawer()

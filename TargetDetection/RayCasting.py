@@ -13,7 +13,7 @@ class TargetDetection(object):
 
         self.screen = turtle.Screen()
         self.screen.setworldcoordinates(0, 0, 400, 400)
-        self.point = [randint(10, 390), randint(10, 390)]
+        self.point = [randint(0, 400), randint(0, 400)]
         self.line = Line([0, 0], self.point)
         self.generate_lines()
         self.draw_lines()
@@ -58,12 +58,20 @@ class TargetDetection(object):
     def ray_counter(self):
         for line in self.line_list:
             if self.line.find_intersection(line):
+                self.paint_red(line)
                 self.counter += 1
         print(self.counter)
         if self.counter % 2 != 0:
             print("Point inside")
         else:
             print("Point outside")
+
+    def paint_red(self, line):
+        self.Tony.color("red")
+        self.Tony.penup()
+        self.Tony.goto(line.return_points()[0])
+        self.Tony.pendown()
+        self.Tony.goto(line.return_points()[1])
 
 
 class Line(object):
@@ -87,9 +95,9 @@ class Line(object):
         if line.return_gradient() - self.gradient != 0:
             intersection_point = (line.return_intersect())/(self.gradient - line.return_gradient())
             x_cords = line.return_range_x()
-            if x_cords[0] <= intersection_point < x_cords[1] and 0 <= intersection_point <= self.point_two[0]:
+            if x_cords[0] <= intersection_point <= x_cords[1] and self.point_one[0] <= intersection_point <= self.point_two[0]:
                 return True
-            return False
+        return False
 
     def return_gradient(self):
         return self.gradient
@@ -101,6 +109,10 @@ class Line(object):
         if self.point_one[0] <= self.point_two[0]:
             return self.point_one[0], self.point_two[0]
         return self.point_two[0], self.point_one[0]
+    
+    def return_points(self):
+        return self.point_one, self.point_two
+
 
 
 app = TargetDetection()

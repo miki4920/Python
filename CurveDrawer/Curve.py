@@ -7,12 +7,12 @@ class CurveDrawer(object):
         self.Tortoise = turtle.Turtle()
         self.Tortoise.speed(0)
         self.Screen = turtle.Screen()
-        self.R = 5
-        self.r = 0.1
-        self.d = 12
-        self.steps = 10000
+        self.R = 17.26
+        self.r = 28.24
+        self.d = 18.24
+        self.steps = 350000
         self.scalar = 10
-        self.rotations = 5
+        self.rotations = 200
         self.draw_curve()
         self.Screen.exitonclick()
 
