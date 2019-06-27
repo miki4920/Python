@@ -10,7 +10,7 @@ class CurveDrawer(object):
         self.R = 17.26
         self.r = 28.24
         self.d = 18.24
-        self.steps = 350000
+        self.steps = 35000
         self.scalar = 10
         self.rotations = 200
         self.draw_curve()
