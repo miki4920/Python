@@ -1,68 +1,53 @@
-import math
+from PIL import Image
+import random
+from itertools import product
+
+
 class PerlinNoise(object):
-    def __init__(self, seed, number_of_points):
-        self.seed = seed.lower()
-        self.seed_value = 0
-        self.size = number_of_points
-        self.x_table = []
-        self.x_multiplier = 7
-        self.x_modulus = 937
-        self.y_table = []
-        self.y_multiplier = 9
-        self.y_modulus = 773
-        self.calculate_seed()
-        self.generate_x_values()
-        self.generate_y_values()
-        self.normalize_values()
+    def __init__(self, side_size):
+        self.length = side_size**2
+        self.gradients = {}
+        self.values = self.values = list(product([i/side_size for i in range(0, side_size)], repeat=2))
+        self.noise = [0] * self.length
+        for i in list(product([0, 1], repeat=2)):
+            vectors = [random.gauss(0, 1) for _ in range(2)]
+            modulus = (vectors[0] ** 2 + vectors[1] ** 2) ** (-0.5)
+            self.gradients[i] = [vectors[0] * modulus, vectors[1] * modulus]
+        self.generate_noise()
 
-    def calculate_seed(self):
-        for letter in self.seed:
-            self.seed_value += ord(letter)
+    def generate_noise(self):
+        for i in range(0, self.length):
+            dots = []
+            for coordinates in self.gradients:
+                dot = self.dot_product(self.gradients[coordinates],
+                [self.values[i][0]-coordinates[0], self.values[i][1]-coordinates[1]])
+                dots.append(dot)
+            self.noise[i] = self.find_average(self.values[i], dots)
 
-    def generate_x_values(self):
-        number = (self.seed_value*self.x_multiplier + self.x_modulus) % self.seed_value
-        if number == 0:
-            self.x_table.append(77)
-        else:
-            if number % 2 == 0:
-                self.x_table.append(-number)
-            else:
-                self.x_table.append(number)
-        for i in range(0, self.size-1):
-            number = (self.x_table[i] * self.x_multiplier + self.x_modulus) % self.x_modulus
-            if number == 0:
-                self.x_table.append(77)
-            else:
-                if number % 2 == 0:
-                    self.x_table.append(-number)
-                else:
-                    self.x_table.append(number)
+    def find_average(self, point, dots):
+        x = point[0]
+        y = point[1]
+        average_x = self.fade(x)
+        linear_one = dots[0]+average_x*(dots[1]-dots[0])
+        linear_two = dots[2]+average_x*(dots[3]-dots[2])
+        average_y = self.fade(y)
+        linear_final = linear_one+average_y*(linear_two-linear_one)
+        return linear_final
 
-    def generate_y_values(self):
-        number = (self.seed_value * self.y_multiplier + self.y_modulus) % self.seed_value
-        if number == 0:
-            self.y_table.append(7)
-        else:
-            if number % 2 == 0:
-                self.y_table.append(number)
-            else:
-                self.y_table.append(-number)
-        for i in range(0, self.size - 1):
-            number = (self.y_table[i] * self.y_multiplier + self.y_modulus) % self.y_modulus
-            if number == 0:
-                self.y_table.append(7)
-            else:
-                if number % 2 == 0:
-                    self.y_table.append(number)
-                else:
-                    self.y_table.append(-number)
+    def dot_product(self, a, b):
+        influence = (a[0]*b[0])+(a[1]*b[1])
+        return influence
 
-    def normalize_values(self):
-        for i in range(0, self.size):
-            modulus = math.sqrt(self.x_table[i]**2 + self.y_table[i]**2)
-            self.x_table[i] = self.x_table[i]/modulus
-            self.y_table[i] = self.y_table[i]/modulus
+    def fade(self, value):
+        return (6*value**2-15*value+10)*value**3
+
+    def return_noise(self):
+        return self.noise
 
 
-
-PerlinNoise("banana", 256)
+size = 400
+x = PerlinNoise(size)
+data = x.return_noise()
+image = Image.new("L", (size,size))
+image.putdata(data, 128, 128)
+image.save("Magic.png")
