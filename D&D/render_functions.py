@@ -1,7 +1,7 @@
 import tcod
 
 
-def render_all(con, entities, game_map, fov_map, fov_recompute, screen_width, screen_height, colors, root):
+def render_all(con, entities, player, game_map, fov_map, fov_recompute, screen_width, screen_height, colors, root):
     if fov_recompute:
         for y in range(game_map.height):
             for x in range(game_map.width):
@@ -20,6 +20,9 @@ def render_all(con, entities, game_map, fov_map, fov_recompute, screen_width, sc
                         tcod.console_set_char_background(con, x, y, colors.get('dark_ground'), tcod.BKGND_SET)
     for entity in entities:
         draw_entity(con, entity, fov_map)
+    tcod.console_set_default_foreground(con, tcod.white)
+    tcod.console_print_ex(con, 1, screen_height - 2, tcod.BKGND_NONE, tcod.LEFT,
+                          'HP: {0:02}/{1:02}'.format(player.fighter.hp, player.fighter.max_hp))
     con.blit(root, 0, 0, 0, 0, screen_width, screen_height)
 
 

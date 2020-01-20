@@ -3,6 +3,8 @@ import tcod
 
 class BasicMonster(object):
     def take_turn(self, target, fov_map, game_map, entities):
+        results = []
+
         monster = self.owner
         if tcod.map_is_in_fov(fov_map, monster.x, monster.y):
 
@@ -10,4 +12,6 @@ class BasicMonster(object):
                 monster.move_astar(target, entities, game_map)
 
             elif target.fighter.hp > 0:
-                print(f'The {monster.name} insults you! Your ego is damaged!')
+                attack_results = monster.fighter.attack(target)
+                results.extend(attack_results)
+        return results
