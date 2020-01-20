@@ -41,3 +41,5 @@ def factorise(n):
                     n /= i
                     counter += 1
                 prime_dict[i] += counter
+
+print(prime_sieve(100000))

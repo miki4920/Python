@@ -23,10 +23,10 @@ def y_coordinate(b, steps, step_size):
     return coordinate_list
 
 
-steps = 100000
+steps = 10000
 step_size = 0.01
-a = 45
-b = 44
+a = 18
+b = 17
 delta = math.pi/6
 x = x_coordinate(a, delta, steps, step_size)
 y = y_coordinate(b, steps, step_size)

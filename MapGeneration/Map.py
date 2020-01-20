@@ -68,7 +68,7 @@ class PerlinNoise(object):
 
     @staticmethod
     def fade(t):
-        return t * t * (3. - 2. * t)
+        return t * t * (3 - (2 * t))
 
     @staticmethod
     def linear(a, b, x):
@@ -82,13 +82,13 @@ class MapGenerator(object):
         self.bottom = min(self.data)
         self.top = max(self.data)
         self.scale = self.top-self.bottom
+        self.snow = 0.95
         self.mountain = 0.9
         self.large_hill = 0.8
         self.hill = 0.6
         self.plain = 0.4
         self.beach = 0.3
         self.shallow_water = 0.2
-        self.river = 1/(self.length**0.5)
 
     def __call__(self):
         self.generate_map()
@@ -96,11 +96,9 @@ class MapGenerator(object):
 
     def generate_map(self):
         for i in range(0, self.length):
-            if self.top >= self.data[i] > self.bottom + (self.scale * self.mountain):
-                if random.randint(1, 1 / self.river) == 1:
-                    pass
-        for i in range(0, self.length):
-            if self.top >= self.data[i] > self.bottom+(self.scale*self.mountain):
+            if self.top >= self.data[i] > self.bottom+(self.scale*self.snow):
+                self.data[i] = (240, 240, 236)
+            elif self.top >= self.data[i] > self.bottom+(self.scale*self.mountain):
                 self.data[i] = (134, 126, 112)
             elif self.bottom+(self.scale*self.mountain) > self.data[i] > self.bottom+(self.scale*self.large_hill):
                 self.data[i] = (151, 124, 83)
@@ -114,47 +112,13 @@ class MapGenerator(object):
                 self.data[i] = (144, 152, 204)
             elif self.bottom <= self.data[i] <= self.bottom+(self.scale*self.shallow_water):
                 self.data[i] = (0, 0, 89)
-        for i in range(0, self.length):
-            if self.data[i] == 20:
-                self.data[i] = (0, 0, 0)
-
-    def generate_river(self, current_index):
-        current_point = self.data[current_index]
-        visited_indexes = []
-        while current_point > self.bottom+(self.scale*self.shallow_water):
-            self.data[current_index] = 20
-            tl = current_index-(int(self.length**0.5)+1)
-            t = tl+1
-            tr = t+1
-            ml = current_index-1
-            mr = current_index+1
-            bl = current_index+(int(self.length**0.5)-1)
-            b = bl+1
-            br = b+1
-            indexes = [tl,t,tr,ml,mr,bl,b,br]
-            within_range = False
-            min_value = self.top
-            min_index = -1
-            for index in indexes:
-                if 0 <= index < self.length and index not in visited_indexes:
-                    if self.data[index] < min_value:
-                        min_value = self.data[index]
-                        min_index = index
-                        within_range = True
-                        visited_indexes.append(index)
-            if not within_range:
-                break
-            current_index = min_index
-            current_point = min_value
 
 
-
-
-size = 256
+size = 4096
 start = time.time()
 values = [(x/size, y/size) for x in range(0, size) for y in range(0, size)]
-noise_generator = PerlinNoise(6, persistence=1.7, frequency_factor=1.4)
-noise_values = [noise_generator(point) for point in values]
+noise_generator = PerlinNoise(6, persistence=1.4, frequency_factor=1.6)
+noise_values = list(map(noise_generator, values))
 map_generator = MapGenerator(noise_values)
 map_values = map_generator()
 image = Image.new("RGB", (size, size))
