@@ -9,16 +9,20 @@ from fov_functions import initialize_fov, recompute_fov
 from game_states import GameStates
 from input_handlers import handle_keys
 from map_objects.game_map import GameMap
-from render_functions import render_all, clear_all
+from render_functions import render_all, clear_all, RenderOrder
 
 
 def main():
     # Screen Resolution
     screen_width = 80
     screen_height = 50
+    # Bar Resolution
+    bar_width = 20
+    panel_height = 7
+    panel_y = screen_height - panel_height
     # Map Resolution
     map_width = 80
-    map_height = 45
+    map_height = 43
     # Room Statistics
     room_max_size = 10
     room_min_size = 6
@@ -39,7 +43,8 @@ def main():
 
     # Initiate entities
     fighter_component = Fighter(hp=8, armor_class=10, strength=20, damage_die=(1, 8))
-    player = Entity(0, 0, "@", tcod.white, "Player", blocks=True, fighter=fighter_component)
+    player = Entity(0, 0, "@", tcod.white, "Player", blocks=True, render_order=RenderOrder.ACTOR,
+                    fighter=fighter_component)
     game_state = GameStates.PLAYER_TURN
     entities = [player]
 
@@ -54,10 +59,13 @@ def main():
     root_con = tcod.console_init_root(screen_width, screen_height,
                                       "First Game", order="C", renderer=tcod.RENDERER_SDL2, vsync=True)
     con = tcod.console.Console(screen_width, screen_height)
+    panel = tcod.console.Console(screen_width, panel_height)
     while True:
         if fov_recompute:
             recompute_fov(fov_map, player.x, player.y, fov_radius, fov_light_walls, fov_algorithm)
-        render_all(con, entities, player, game_map, fov_map, fov_recompute, screen_width, screen_height, colors,
+        render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, screen_width, screen_height,
+                   bar_width,
+                   panel_height, panel_y, colors,
                    root_con)
         tcod.console_flush()
         clear_all(con, entities)

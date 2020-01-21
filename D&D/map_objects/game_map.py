@@ -7,6 +7,7 @@ from components.fighter import Fighter
 from entity import Entity
 from map_objects.rectangle import Rect
 from map_objects.tile import Tile
+from render_functions import RenderOrder
 
 
 def place_entities(room, entities, max_monsters_per_room):
@@ -22,11 +23,13 @@ def place_entities(room, entities, max_monsters_per_room):
             if randint(0, 100) < 80:
                 fighter_component = Fighter(hp=5, armor_class=12, strength=7, damage_die=(1, 4))
                 ai_component = BasicMonster()
-                monster = Entity(x, y, 'k', tcod.desaturated_green, "Kobold", blocks=True, fighter=fighter_component, ai=ai_component)
+                monster = Entity(x, y, 'k', tcod.desaturated_green, "Kobold", blocks=True,
+                                 render_order=RenderOrder.ACTOR, fighter=fighter_component, ai=ai_component)
             else:
                 fighter_component = Fighter(hp=7, armor_class=15, strength=8, damage_die=(1, 6))
                 ai_component = BasicMonster()
-                monster = Entity(x, y, 'G', tcod.darker_green, "Goblin", blocks=True, fighter=fighter_component, ai=ai_component)
+                monster = Entity(x, y, 'G', tcod.darker_green, "Goblin", blocks=True, render_order=RenderOrder.ACTOR,
+                                 fighter=fighter_component, ai=ai_component)
 
             entities.append(monster)
 
