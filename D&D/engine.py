@@ -23,6 +23,10 @@ def main():
     # Map Resolution
     map_width = 80
     map_height = 43
+    # Message Resolution
+    message_x = bar_width + 2
+    message_width = screen_width - bar_width - 2
+    message_height = panel_height - 1
     # Room Statistics
     room_max_size = 10
     room_min_size = 6
