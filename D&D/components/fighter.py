@@ -6,15 +6,26 @@ import tcod
 from game_messages import Message
 
 
+def stat_conversion(stat):
+    if stat > 11:
+        stat = int(floor((stat - 10) / 2))
+    else:
+        stat = -int(floor((11 - stat) / 2))
+    return stat
+
+
 class Fighter(object):
     def __init__(self, hp, armor_class, strength, damage_die):
         self.max_hp = hp
         self.hp = hp
         self.ac = armor_class
-        if strength > 11:
-            self.str = int(floor((strength-10)/2))
-        else:
-            self.str = -int(floor((11-strength)/2))
+        self.str = stat_conversion(strength)
+        # self.str = stat_conversion(stats["strength"])
+        # self.dex = stat_conversion(stats["dexterity"])
+        # self.con = stat_conversion(stats["constitution"])
+        # self.int = stat_conversion(stats["intelligence"])
+        # self.wis = stat_conversion(stats["wisdom"])
+        # self.cha = stat_conversion(stats["charisma"])
         self.damage_die = damage_die
 
     def take_damage(self, amount):
