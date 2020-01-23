@@ -1,3 +1,8 @@
+import tcod
+
+from game_messages import Message
+from game_states import GameStates
+
 
 def handle_keys(key):
     if key.sym == 1073741920:    # 8 on NUM
@@ -18,7 +23,7 @@ def handle_keys(key):
     elif key.sym == 1073741921:  # 9 on NUM
         # Moves one tile up and one right
         return {'move': (1, -1)}
-    elif key.sym == 1073741913:  # 1 on NUM
+    elif key.sym == 1073741913:  # 1 on NUM q
         # Moves one tile down and one left
         return {'move': (-1, 1)}
     elif key.sym == 1073741915:  # 3 on NUM
@@ -31,4 +36,17 @@ def handle_keys(key):
     elif key.sym == 27:          # Escape Key
         # Exit the game
         return {'leave': True}
+    elif key.sym == 1073741909:
+        # Sets a enemy checkup
+        return {'look_enemy': GameStates.PLAYER_DEAD}
     return {}
+
+
+def get_names_under_mouse(mouse, entities, fov_map):
+    x, y = mouse.tile
+
+    names = [entity.name for entity in entities
+             if entity.x == x and entity.y == y and tcod.map_is_in_fov(fov_map, entity.x, entity.y)]
+    names = ', '.join(names)
+
+    return Message(names.capitalize(), tcod.light_green)

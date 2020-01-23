@@ -9,8 +9,8 @@ class RenderOrder(Enum):
     ACTOR = 3
 
 
-def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, screen_width, screen_height, bar_width,
-               panel_height, panel_y, colors, root):
+def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, message_log, screen_width, screen_height,
+               bar_width, panel_height, panel_y, colors, root):
     if fov_recompute:
         for y in range(game_map.height):
             for x in range(game_map.width):
@@ -33,6 +33,12 @@ def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, s
     con.blit(root, 0, 0, 0, 0, screen_width, screen_height)
     panel.default_bg = tcod.black
     panel.clear()
+    # Print the game messages, one line at a time
+    y = 1
+    for message in message_log.messages:
+        panel.default_fg = message.color
+        tcod.console_print_ex(panel, message_log.x, y, tcod.BKGND_NONE, tcod.LEFT, message.text)
+        y += 1
     render_bar(panel, 1, 1, bar_width, 'HP', player.fighter.hp, player.fighter.max_hp,
                tcod.darker_red, tcod.darker_gray)
     panel.blit(root, 0, panel_y, 0, 0, screen_width, screen_height)
