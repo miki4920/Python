@@ -16,34 +16,35 @@ def get_monster_name():
 
 
 def get_attribute(attribute_name):
-    while True:
-        try:
-            number = int(input(f"Please Insert Monster's {attribute_name}: "))
-            print(f"The {attribute_name} you inserted: {number}. Is it correct?")
-            answer = input().lower()
-            if "y" in answer:
-                break
-            else:
-                cls()
-        except ValueError:
-            cls()
-            print("Your number wasn't correct")
+    number = input(f"Please Insert Monster's {attribute_name}: ")
+    print(f"The {attribute_name} you inserted: {number}.")
     return number
 
 
-def get_attributes():
-    attributes = {"HP": get_attribute("HP"), "AC": get_attribute("AC"), "Speed": get_attribute("Speed")}
+def get_attributes(required_stats):
+    attributes = {}
+    for stat in required_stats:
+        attributes[f"{stat}"] = get_attribute(f"{stat}")
     return attributes
+
+
+def action_maker():
+    action = {}
+    action_attributes = ["HIT", "DAMAGE"]
+    for attribute in action_attributes:
+        action[f"{attribute}"] = get_attribute(f"{attribute}")
+    return action
 
 
 def create_monster():
     name = get_monster_name()
-    attributes = get_attributes()
-    statistics = {}
+    attributes = get_attributes(["HP", "AC", "Speed"])
+    statistics = get_attributes(["STR", "DEX", "CON", "INT", "WIS", "CHA"])
     actions = {}
+    for i in range(0, int(input("How many actions does the monster have? "))):
+        actions[str(i)] = action_maker()
     monster = {"name": name, "attributes": attributes, "statistics": statistics, "actions": actions}
-    for key in attributes:
-        print(f"{key}:{attributes[key]}")
+    print(monster)
 
 
 if __name__ == "__main__":

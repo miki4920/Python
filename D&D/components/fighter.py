@@ -51,3 +51,4 @@ class Fighter(object):
             results.append({'message': Message('{0} attacks {1} but misses.'.format(
                 self.owner.name.capitalize(), target.name))})
         return results
+
