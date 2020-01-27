@@ -1,30 +1,15 @@
-def cls():
-    print("\n" * 100)
-    print("Renewing the process")
-
-
-def get_monster_name():
-    while True:
-        name = input("Please Insert Monster's name: ")
-        print(f"The name you inserted: {name}. Is it correct?")
-        answer = input().lower()
-        if "y" in answer:
-            break
-        else:
-            cls()
-    return name
+import json
 
 
 def get_attribute(attribute_name):
     number = input(f"Please Insert Monster's {attribute_name}: ")
-    print(f"The {attribute_name} you inserted: {number}.")
     return number
 
 
 def get_attributes(required_stats):
     attributes = {}
     for stat in required_stats:
-        attributes[f"{stat}"] = get_attribute(f"{stat}")
+        attributes[stat] = get_attribute(stat)
     return attributes
 
 
@@ -32,19 +17,38 @@ def action_maker():
     action = {}
     action_attributes = ["HIT", "DAMAGE"]
     for attribute in action_attributes:
-        action[f"{attribute}"] = get_attribute(f"{attribute}")
+        action[attribute] = get_attribute(attribute)
     return action
 
 
+def store_monster(monster, name, cr):
+    with open(f"monsters/{name}.json", "w") as creature_file:
+        json.dump(monster, creature_file, indent=4)
+    try:
+        with open(f"monsters/monster_dict.json", "r") as monster_dict_file:
+            monster_dict = json.load(monster_dict_file)
+            if cr in monster_dict:
+                monster_dict[cr].append(name)
+            else:
+                monster_dict[cr] = [name]
+        with open(f"monsters/monster_dict.json", "w") as monster_dict_file:
+            json.dump(monster_dict, monster_dict_file, indent=4, sort_keys=True)
+    except (FileNotFoundError, json.JSONDecodeError):
+        monster_dict = {cr: [name]}
+        json.dump(monster_dict, open("monsters/monster_dict.json", "w"))
+    print("Writing successful")
+
+
 def create_monster():
-    name = get_monster_name()
-    attributes = get_attributes(["HP", "AC", "Speed"])
-    statistics = get_attributes(["STR", "DEX", "CON", "INT", "WIS", "CHA"])
-    actions = {}
-    for i in range(0, int(input("How many actions does the monster have? "))):
-        actions[str(i)] = action_maker()
-    monster = {"name": name, "attributes": attributes, "statistics": statistics, "actions": actions}
-    print(monster)
+    name = get_attribute("name")
+    # attributes = get_attributes(["HP", "AC", "Speed"])
+    # statistics = get_attributes(["STR", "DEX", "CON", "INT", "WIS", "CHA"])
+    cr = get_attribute("CR")
+    # actions = {}
+    # for i in range(0, int(input("How many actions does the monster have? "))):
+    #     actions[str(i)] = action_maker()
+    # monster = {"attributes": attributes, "statistics": statistics, "actions": actions}
+    store_monster(name, name, cr)
 
 
 if __name__ == "__main__":
