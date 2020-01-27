@@ -35,20 +35,20 @@ def store_monster(monster, name, cr):
             json.dump(monster_dict, monster_dict_file, indent=4, sort_keys=True)
     except (FileNotFoundError, json.JSONDecodeError):
         monster_dict = {cr: [name]}
-        json.dump(monster_dict, open("monsters/monster_dict.json", "w"))
+        json.dump(monster_dict, open("monsters/monster_dict.json", "w"), indent=4)
     print("Writing successful")
 
 
 def create_monster():
     name = get_attribute("name")
-    # attributes = get_attributes(["HP", "AC", "Speed"])
-    # statistics = get_attributes(["STR", "DEX", "CON", "INT", "WIS", "CHA"])
+    attributes = get_attributes(["HP", "AC", "Speed"])
+    statistics = get_attributes(["STR", "DEX", "CON", "INT", "WIS", "CHA"])
     cr = get_attribute("CR")
-    # actions = {}
-    # for i in range(0, int(input("How many actions does the monster have? "))):
-    #     actions[str(i)] = action_maker()
-    # monster = {"attributes": attributes, "statistics": statistics, "actions": actions}
-    store_monster(name, name, cr)
+    actions = {}
+    for i in range(0, int(input("How many actions does the monster have? "))):
+        actions[str(i)] = action_maker()
+    monster = {"attributes": attributes, "statistics": statistics, "actions": actions}
+    store_monster(monster, name, cr)
 
 
 if __name__ == "__main__":
