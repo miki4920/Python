@@ -1,25 +1,25 @@
 {
   "attributes": {
-    "HP": "2d6",
+    "HP": "3d6+6",
     "AC": "15",
-    "Speed": "30"
+    "Speed": "20"
   },
   "statistics": {
-    "STR": "8",
+    "STR": "15",
     "DEX": "14",
-    "CON": "10",
-    "INT": "10",
-    "WIS": "8",
-    "CHA": "8"
+    "CON": "14",
+    "INT": "12",
+    "WIS": "10",
+    "CHA": "9"
   },
   "actions": {
     "0": {
       "HIT": "4",
-      "DAMAGE": "1d6+2"
+      "DAMAGE": "1d8+2"
     },
     "1": {
       "HIT": "4",
-      "DAMAGE": "1d6+2"
+      "DAMAGE": "1d4+2"
     }
   }
 }

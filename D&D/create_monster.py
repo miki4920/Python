@@ -1,4 +1,5 @@
 import json
+import random
 
 
 def get_attribute(attribute_name):
@@ -31,7 +32,7 @@ def store_monster(monster, name, cr):
                 monster_dict[cr].append(name)
             else:
                 monster_dict[cr] = [name]
-        with open(f"monsters/monster_dict.json", "w") as monster_dict_file:
+        with open("monsters/monster_dict.json", "w") as monster_dict_file:
             json.dump(monster_dict, monster_dict_file, indent=4, sort_keys=True)
     except (FileNotFoundError, json.JSONDecodeError):
         monster_dict = {cr: [name]}
@@ -51,5 +52,34 @@ def create_monster():
     store_monster(monster, name, cr)
 
 
-if __name__ == "__main__":
-    create_monster()
+def generate_creatures(cr):
+    current_monsters = []
+    monster_group_max = 4
+    try:
+        with open(f"monsters/monster_dict.json", "r") as file:
+            monster_dictionary = json.load(file)
+            choice = 2
+            # Powerful Monster
+            if choice == 1:
+                current_monsters.append(random.choice(monster_dictionary.get(str(cr))))
+            elif choice == 2:
+                for i in range(0, monster_group_max):
+                    current_monsters.append(
+                        random.choice(monster_dictionary.get(round_to_nearest(cr / monster_group_max))))
+        return current_monsters
+    except (json.JSONDecodeError, FileNotFoundError):
+        print("There has been an error with the monster file")
+        return []
+    except TypeError:
+        print("There is no requested cr in the dictionary")
+        return []
+
+
+def round_to_nearest(cr):
+    monster_cr = [0.125, 0.25, 0.5, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
+                  23, 24, 25, 26, 27, 28, 29, 30]
+    for i in range(0, len(monster_cr) - 1):
+        if monster_cr[i] <= cr < monster_cr[i + 1]:
+            return str(monster_cr[i])
+        elif monster_cr[i] == cr:
+            return str(monster_cr[i])

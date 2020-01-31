@@ -26,6 +26,7 @@ class Fighter(object):
         # self.int = stat_conversion(stats["intelligence"])
         # self.wis = stat_conversion(stats["wisdom"])
         # self.cha = stat_conversion(stats["charisma"])
+        # self.cr = cr
         self.damage_die = damage_die
 
     def take_damage(self, amount):
