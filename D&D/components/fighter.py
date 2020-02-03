@@ -1,12 +1,14 @@
 from math import floor
-from random import randint
+from random import choice
 
 import tcod
 
+from components.dice import DiceRoll
 from game_messages import Message
 
 
 def stat_conversion(stat):
+    stat = int(stat)
     if stat > 11:
         stat = int(floor((stat - 10) / 2))
     else:
@@ -15,19 +17,20 @@ def stat_conversion(stat):
 
 
 class Fighter(object):
-    def __init__(self, hp, armor_class, strength, damage_die):
-        self.max_hp = hp
-        self.hp = hp
-        self.ac = armor_class
-        self.str = stat_conversion(strength)
-        # self.str = stat_conversion(stats["strength"])
-        # self.dex = stat_conversion(stats["dexterity"])
-        # self.con = stat_conversion(stats["constitution"])
-        # self.int = stat_conversion(stats["intelligence"])
-        # self.wis = stat_conversion(stats["wisdom"])
-        # self.cha = stat_conversion(stats["charisma"])
-        # self.cr = cr
-        self.damage_die = damage_die
+    def __init__(self, statistics):
+        attributes = statistics.get("attributes")
+        self.max_hp = int(DiceRoll(attributes.get("HP")).roll_dice())
+        self.hp = int(self.max_hp)
+        self.ac = int(attributes.get("AC"))
+        self.speed = int(attributes.get("Speed"))
+        stats = statistics.get("statistics")
+        self.str = stat_conversion(stats["STR"])
+        self.dex = stat_conversion(stats["DEX"])
+        self.con = stat_conversion(stats["CON"])
+        self.int = stat_conversion(stats["INT"])
+        self.wis = stat_conversion(stats["WIS"])
+        self.cha = stat_conversion(stats["CHA"])
+        self.actions = statistics.get("actions")
 
     def take_damage(self, amount):
         results = []
@@ -37,10 +40,11 @@ class Fighter(object):
         return results
 
     def attack(self, target):
-        attack_roll = randint(1, 20) + self.str
+        attack_stats = self.actions[choice(list(self.actions.keys()))]
+        attack_roll = DiceRoll("1d20+" + attack_stats.get("HIT")).roll_dice()
         results = []
         if attack_roll >= target.fighter.ac:
-            damage = randint(self.damage_die[0], self.damage_die[1]) + self.str
+            damage = DiceRoll(attack_stats.get("DAMAGE")).roll_dice()
             if damage > 0:
                 results.append({'message': Message('{0} attacks {1} for {2} hit points.'.format(
                     self.owner.name.capitalize(), target.name, str(damage)), tcod.yellow)})

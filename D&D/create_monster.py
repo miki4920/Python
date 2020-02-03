@@ -56,9 +56,9 @@ def generate_creatures(cr):
     current_monsters = []
     monster_group_max = 4
     try:
-        with open(f"monsters/monster_dict.json", "r") as file:
+        with open("monsters/monster_dict.json", "r") as file:
             monster_dictionary = json.load(file)
-            choice = 2
+            choice = random.randint(1, 2)
             # Powerful Monster
             if choice == 1:
                 current_monsters.append(random.choice(monster_dictionary.get(str(cr))))
@@ -75,6 +75,12 @@ def generate_creatures(cr):
         return []
 
 
+def get_statistics(monster_name):
+    with open(f"monsters/{monster_name}.json", "r") as creature_file:
+        monster = json.load(creature_file)
+    return monster
+
+
 def round_to_nearest(cr):
     monster_cr = [0.125, 0.25, 0.5, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
                   23, 24, 25, 26, 27, 28, 29, 30]
@@ -83,3 +89,7 @@ def round_to_nearest(cr):
             return str(monster_cr[i])
         elif monster_cr[i] == cr:
             return str(monster_cr[i])
+
+
+if __name__ == "__main__":
+    create_monster()

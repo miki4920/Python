@@ -45,9 +45,37 @@ def main():
         'light_wall': tcod.Color(0, 0, 26),
         'light_ground': tcod.Color(50, 50, 77)
     }
-
+    player = {
+        "attributes": {
+            "HP": "5d8",
+            "AC": "15",
+            "Speed": "30"
+        },
+        "statistics": {
+            "STR": "14",
+            "DEX": "12",
+            "CON": "11",
+            "INT": "6",
+            "WIS": "10",
+            "CHA": "7"
+        },
+        "actions": {
+            "0": {
+                "HIT": "4",
+                "DAMAGE": "1d4+2"
+            },
+            "1": {
+                "HIT": "4",
+                "DAMAGE": "1d8+2"
+            },
+            "2": {
+                "HIT": "3",
+                "DAMAGE": "1d8+1"
+            }
+        }
+    }
     # Initiate entities
-    fighter_component = Fighter(hp=8, armor_class=10, strength=20, damage_die=(1, 8))
+    fighter_component = Fighter(player)
     player = Entity(0, 0, "@", tcod.white, "Player", blocks=True, render_order=RenderOrder.ACTOR,
                     fighter=fighter_component)
     game_state = GameStates.PLAYER_TURN
