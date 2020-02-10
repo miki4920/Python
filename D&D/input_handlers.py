@@ -1,10 +1,10 @@
 import tcod
 
 from game_messages import Message
-from game_states import GameStates
+from game_states import GameStates, MenuState
 
 
-def handle_keys(key):
+def handle_player_turn_keys(key):
     if key.sym == 1073741920:    # 8 on NUM
         # Moves one tile up
         return {'move': (0, -1)}
@@ -33,7 +33,7 @@ def handle_keys(key):
     elif key.sym == 1073741909:
         # Sets a enemy checkup
         return {'look_enemy': GameStates.PLAYER_DEAD}
-    elif key.sym == 1073741912:
+    elif key.sym == 1073741912:  # Enter on Numepad
         return {'pickup': True}
     elif key.sym == 1073741923:
         return {'show_inventory': True}
@@ -45,6 +45,48 @@ def handle_keys(key):
         # Exit the game
         return {'leave': True}
 
+    return {}
+
+
+def handle_player_dead_keys(key):
+    if key.sym == 1073741923:
+        return {'show_inventory': True}
+    elif key.sym == 1073741892:  # F11 Key
+        # Sets full screen
+        return {'fullscreen': True}
+    elif key.sym == 27:  # Escape Key
+        # Exit the game
+        return {'leave': True}
+    return {}
+
+
+def handle_inventory_keys(key):
+    index = MenuState.menu_state
+    if key.sym == 1073741920:  # 8 on NUM
+        # Increments index
+        index += 1
+    elif key.sym == 1073741914:  # 2 on NUM
+        # Decrements index
+        index -= 1
+    elif key.sym == 1073741912:
+        return {'inventory_index': MenuState.menu_state}
+    elif key.sym == 1073741892:  # F11 Key
+        # Sets full screen
+        return {'fullscreen': True}
+    elif key.sym == 27:  # Escape Key
+        # Exit the game
+        return {'leave': True}
+    MenuState.menu_state = index
+    return {}
+
+
+def handle_keys(key, game_state):
+    if game_state == GameStates.PLAYER_TURN:
+        return handle_player_turn_keys(key)
+    elif game_state == GameStates.PLAYER_DEAD:
+        return handle_player_dead_keys(key)
+    elif game_state == GameStates.SHOW_INVENTORY:
+        return handle_inventory_keys(key)
     return {}
 
 

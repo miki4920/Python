@@ -1,8 +1,10 @@
 import tcod as tcod
 
+from game_states import MenuState
+
 
 def menu(con, header, options, width, screen_width, screen_height, root):
-    if len(options) > 26:
+    if len(options) > 25:
         raise ValueError('Cannot have a menu with more than 26 options.')
 
     # calculate total height for the header (after auto-wrap) and one line per option
@@ -15,12 +17,15 @@ def menu(con, header, options, width, screen_width, screen_height, root):
     # print the header, with auto-wrap
     tcod.console_set_default_foreground(window, tcod.white)
     tcod.console_print_rect_ex(window, 0, 0, width, height, tcod.BKGND_NONE, tcod.LEFT, header)
-
     # print all the options
     y = header_height
-    letter_index = ord('a')
-    for option_text in options:
-        text = '(' + chr(letter_index) + ') ' + option_text
+    letter_index = 1
+    MenuState.menu_state = MenuState.menu_state % len(options)
+    for option_index in range(0, len(options)):
+        if option_index == MenuState.menu_state and MenuState.menu_state < len(options):
+            text = '(' + "X" + ') ' + options[option_index]
+        else:
+            text = '(' + " " + ') ' + options[option_index]
         tcod.console_print_ex(window, 0, y, tcod.BKGND_NONE, tcod.LEFT, text)
         y += 1
         letter_index += 1

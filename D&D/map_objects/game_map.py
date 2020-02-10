@@ -32,7 +32,7 @@ def place_entities(room, entities, monster_difficulty, max_items_per_room):
 
         if not any([entity for entity in entities if entity.x == x and entity.y == y]):
             item_component = Item()
-            item = Entity(x, y, '!', tcod.violet, 'Healing Potion', render_order=RenderOrder.ITEM,
+            item = Entity(x, y, '+', tcod.pink, 'Healing Potion', render_order=RenderOrder.ITEM,
                           item=item_component)
 
             entities.append(item)

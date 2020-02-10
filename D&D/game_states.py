@@ -7,3 +7,7 @@ class GameStates(Enum):
     PLAYER_DEAD = 3
     LOOK_ENEMY = 4
     SHOW_INVENTORY = 5
+
+
+class MenuState:
+    menu_state = 0

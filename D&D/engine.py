@@ -8,7 +8,7 @@ from death_functions import kill_monster, kill_player
 from entity import Entity, get_blocking_entities_at_location
 from fov_functions import initialize_fov, recompute_fov
 from game_messages import MessageLog, Message
-from game_states import GameStates
+from game_states import GameStates, MenuState
 from input_handlers import handle_keys, get_names_under_mouse
 from map_objects.game_map import GameMap
 from render_functions import render_all, clear_all, RenderOrder
@@ -82,15 +82,17 @@ def main():
             move = None
             pickup = None
             show_inventory = None
+            inventory_index = None
             leave = None
             fullscreen = None
             look_enemy = None
             player_turn_results = []
             if isinstance(event, tcod.event.KeyDown) and game_state != GameStates.LOOK_ENEMY:
-                action = handle_keys(event)
+                action = handle_keys(event, game_state)
                 move = action.get("move")
                 pickup = action.get("pickup")
                 show_inventory = action.get("show_inventory")
+                inventory_index = action.get('inventory_index')
                 leave = action.get("leave")
                 fullscreen = action.get("fullscreen")
                 look_enemy = action.get("look_enemy")
@@ -117,7 +119,11 @@ def main():
             elif show_inventory:
                 previous_game_state = game_state
                 game_state = GameStates.SHOW_INVENTORY
-
+                MenuState.menu_state = 0
+            elif inventory_index is not None and previous_game_state != GameStates.PLAYER_DEAD and inventory_index < len(
+                    player.inventory.items):
+                item = player.inventory.items[inventory_index]
+                print(item)
             elif move and game_state == GameStates.PLAYER_TURN:
                 dx, dy = move
                 destination_x = player.x + dx
