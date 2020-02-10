@@ -4,6 +4,7 @@ from random import choice
 import tcod
 
 from components.dice import DiceRoll
+from create_monster import get_statistics
 from game_messages import Message
 
 
@@ -17,7 +18,11 @@ def stat_conversion(stat):
 
 
 class Fighter(object):
-    def __init__(self, statistics):
+    def __init__(self, name):
+        self.name = name
+        statistics = get_statistics(name)
+        if not statistics:
+            quit()
         attributes = statistics.get("attributes")
         self.max_hp = int(DiceRoll(attributes.get("HP")).roll_dice())
         self.hp = int(self.max_hp)

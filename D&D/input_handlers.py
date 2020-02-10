@@ -30,15 +30,21 @@ def handle_keys(key):
         # Moves one tile down and one right
         return {'move': (1, 1)}
 
-    if key.sym == 1073741892:    # F11 Key
+    elif key.sym == 1073741909:
+        # Sets a enemy checkup
+        return {'look_enemy': GameStates.PLAYER_DEAD}
+    elif key.sym == 1073741912:
+        return {'pickup': True}
+    elif key.sym == 1073741923:
+        return {'show_inventory': True}
+
+    elif key.sym == 1073741892:  # F11 Key
         # Sets full screen
         return {'fullscreen': True}
     elif key.sym == 27:          # Escape Key
         # Exit the game
         return {'leave': True}
-    elif key.sym == 1073741909:
-        # Sets a enemy checkup
-        return {'look_enemy': GameStates.PLAYER_DEAD}
+
     return {}
 
 

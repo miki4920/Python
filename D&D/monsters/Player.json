@@ -1,0 +1,21 @@
+{
+  "attributes": {
+    "HP": "4d10+12",
+    "AC": "18",
+    "Speed": "30"
+  },
+  "statistics": {
+    "STR": "15",
+    "DEX": "13",
+    "CON": "11",
+    "INT": "9",
+    "WIS": "8",
+    "CHA": "8"
+  },
+  "actions": {
+    "0": {
+      "HIT": "10",
+      "DAMAGE": "4d12+4"
+    }
+  }
+}

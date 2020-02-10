@@ -25,18 +25,21 @@ def action_maker():
 def store_monster(monster, name, cr):
     with open(f"monsters/{name}.json", "w") as creature_file:
         json.dump(monster, creature_file, indent=4)
-    try:
-        with open(f"monsters/monster_dict.json", "r") as monster_dict_file:
-            monster_dict = json.load(monster_dict_file)
-            if cr in monster_dict:
-                monster_dict[cr].append(name)
-            else:
-                monster_dict[cr] = [name]
-        with open("monsters/monster_dict.json", "w") as monster_dict_file:
-            json.dump(monster_dict, monster_dict_file, indent=4, sort_keys=True)
-    except (FileNotFoundError, json.JSONDecodeError):
-        monster_dict = {cr: [name]}
-        json.dump(monster_dict, open("monsters/monster_dict.json", "w"), indent=4)
+    if "player" in name.lower():
+        pass
+    else:
+        try:
+            with open(f"monsters/monster_dict.json", "r") as monster_dict_file:
+                monster_dict = json.load(monster_dict_file)
+                if cr in monster_dict:
+                    monster_dict[cr].append(name)
+                else:
+                    monster_dict[cr] = [name]
+            with open("monsters/monster_dict.json", "w") as monster_dict_file:
+                json.dump(monster_dict, monster_dict_file, indent=4, sort_keys=True)
+        except (FileNotFoundError, json.JSONDecodeError):
+            monster_dict = {cr: [name]}
+            json.dump(monster_dict, open("monsters/monster_dict.json", "w"), indent=4)
     print("Writing successful")
 
 
@@ -75,10 +78,14 @@ def generate_creatures(cr):
         return []
 
 
-def get_statistics(monster_name):
-    with open(f"monsters/{monster_name}.json", "r") as creature_file:
-        monster = json.load(creature_file)
-    return monster
+def get_statistics(name):
+    try:
+        with open(f"monsters/{name}.json", "r") as creature_file:
+            monster = json.load(creature_file)
+        return monster
+    except FileNotFoundError:
+        print(f"File {name}.json does not exist")
+        return False
 
 
 def round_to_nearest(cr):
