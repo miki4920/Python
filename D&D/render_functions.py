@@ -45,9 +45,13 @@ def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, m
     render_bar(panel, 1, 1, bar_width, 'HP', player.fighter.hp, player.fighter.max_hp,
                tcod.darker_red, tcod.darker_gray)
     panel.blit(root, 0, panel_y, 0, 0, screen_width, screen_height)
-    if game_state == GameStates.SHOW_INVENTORY:
-        inventory_menu(con, 'Press the key next to an item to use it, or Esc to cancel.\n',
-                       player.inventory, 50, screen_width, screen_height, root)
+    if game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY):
+        if game_state == GameStates.SHOW_INVENTORY:
+            inventory_title = 'Press the key next to an item to use it, or Esc to cancel.\n'
+        else:
+            inventory_title = 'Press the key next to an item to drop it, or Esc to cancel.\n'
+
+        inventory_menu(con, inventory_title, player.inventory, 50, screen_width, screen_height, root)
 
 
 def clear_all(con, entities):

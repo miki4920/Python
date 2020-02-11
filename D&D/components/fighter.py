@@ -62,3 +62,7 @@ class Fighter(object):
                 self.owner.name.capitalize(), target.name))})
         return results
 
+    def heal(self, amount):
+        self.hp += DiceRoll(amount).roll_dice()
+        if self.hp > self.max_hp:
+            self.hp = self.max_hp

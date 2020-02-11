@@ -5,6 +5,7 @@ import tcod
 from components.ai import BasicMonster
 from components.fighter import Fighter
 from components.item import Item
+from components.item_functions import heal
 from create_monster import generate_creatures
 from entity import Entity
 from map_objects.rectangle import Rect
@@ -31,7 +32,7 @@ def place_entities(room, entities, monster_difficulty, max_items_per_room):
         y = randint(room.y1 + 1, room.y2 - 1)
 
         if not any([entity for entity in entities if entity.x == x and entity.y == y]):
-            item_component = Item()
+            item_component = Item(use_function=heal, amount="2d4+2")
             item = Entity(x, y, '+', tcod.pink, 'Healing Potion', render_order=RenderOrder.ITEM,
                           item=item_component)
 

@@ -33,10 +33,12 @@ def handle_player_turn_keys(key):
     elif key.sym == 1073741909:
         # Sets a enemy checkup
         return {'look_enemy': GameStates.PLAYER_DEAD}
-    elif key.sym == 1073741912:  # Enter on Numepad
+    elif key.sym == 1073741912:  # Enter on Numpad
         return {'pickup': True}
-    elif key.sym == 1073741923:
+    elif key.sym == 1073741923:  # . on Numpad
         return {'show_inventory': True}
+    elif key.sym == 1073741922:  # 0 on Numpad
+        return {'drop_inventory': True}
 
     elif key.sym == 1073741892:  # F11 Key
         # Sets full screen
@@ -73,7 +75,7 @@ def handle_inventory_keys(key):
     elif key.sym == 1073741892:  # F11 Key
         # Sets full screen
         return {'fullscreen': True}
-    elif key.sym == 27:  # Escape Key
+    elif key.sym == 1073741923:  # Escape Key
         # Exit the game
         return {'leave': True}
     MenuState.menu_state = index
@@ -85,7 +87,7 @@ def handle_keys(key, game_state):
         return handle_player_turn_keys(key)
     elif game_state == GameStates.PLAYER_DEAD:
         return handle_player_dead_keys(key)
-    elif game_state == GameStates.SHOW_INVENTORY:
+    elif game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY):
         return handle_inventory_keys(key)
     return {}
 
