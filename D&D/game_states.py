@@ -8,6 +8,7 @@ class GameStates(Enum):
     LOOK_ENEMY = 4
     SHOW_INVENTORY = 5
     DROP_INVENTORY = 6
+    TARGETING = 7
 
 
 class MenuState:

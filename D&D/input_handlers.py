@@ -82,11 +82,20 @@ def handle_inventory_keys(key):
     return {}
 
 
+def handle_targeting_keys(key):
+    if key.sym == 27:
+        return {'exit': True}
+
+    return {}
+
+
 def handle_keys(key, game_state):
     if game_state == GameStates.PLAYER_TURN:
         return handle_player_turn_keys(key)
     elif game_state == GameStates.PLAYER_DEAD:
         return handle_player_dead_keys(key)
+    elif game_state == GameStates.TARGETING:
+        return handle_targeting_keys(key)
     elif game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY):
         return handle_inventory_keys(key)
     return {}

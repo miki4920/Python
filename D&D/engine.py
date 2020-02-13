@@ -105,7 +105,6 @@ def main():
                     message_log.clear_log()
                     message_log.add_message(get_names_under_mouse(event, entities, fov_map))
                     game_state = GameStates.PLAYER_TURN
-
             if look_enemy and game_state == GameStates.PLAYER_TURN:
                 game_state = GameStates.LOOK_ENEMY
             elif look_enemy and game_state == GameStates.LOOK_ENEMY:
@@ -129,7 +128,7 @@ def main():
                     player.inventory.items):
                 item = player.inventory.items[inventory_index]
                 if game_state == GameStates.SHOW_INVENTORY:
-                    player_turn_results.extend(player.inventory.use(item))
+                    player_turn_results.extend(player.inventory.use(item, entities=entities, fov_map=fov_map))
                 elif game_state == GameStates.DROP_INVENTORY:
                     player_turn_results.extend(player.inventory.drop_item(item))
             elif move and game_state == GameStates.PLAYER_TURN:
