@@ -5,11 +5,11 @@ import tcod.event
 from components.fighter import Fighter
 from components.inventory import Inventory
 from death_functions import kill_monster, kill_player
-from entity import Entity, get_blocking_entities_at_location
+from entity import Entity, get_blocking_entities_at_location, check_entity_at_location
 from fov_functions import initialize_fov, recompute_fov
 from game_messages import MessageLog, Message
 from game_states import GameStates, MenuState
-from input_handlers import handle_keys, get_names_under_mouse
+from input_handlers import handle_keys, handle_mouse
 from map_objects.game_map import GameMap
 from render_functions import render_all, clear_all, RenderOrder
 
@@ -81,6 +81,9 @@ def main():
         for event in tcod.event.get():
             move = None
             pickup = None
+            look_enemy = None
+            left_click = None
+            right_click = None
             show_inventory = None
             drop_inventory = None
             inventory_index = None
@@ -88,27 +91,29 @@ def main():
             fullscreen = None
             look_enemy = None
             player_turn_results = []
-            if isinstance(event, tcod.event.KeyDown) and game_state != GameStates.LOOK_ENEMY:
+            if isinstance(event, tcod.event.KeyDown):
                 action = handle_keys(event, game_state)
                 move = action.get("move")
                 pickup = action.get("pickup")
+                look_enemy = action.get("look_enemy")
                 show_inventory = action.get("show_inventory")
-                drop_inventory = action.get('drop_inventory')
-                inventory_index = action.get('inventory_index')
+                drop_inventory = action.get("drop_inventory")
+                inventory_index = action.get("inventory_index")
                 leave = action.get("leave")
                 fullscreen = action.get("fullscreen")
                 look_enemy = action.get("look_enemy")
-            elif game_state == GameStates.LOOK_ENEMY:
-                message_log.clear_log()
-                message_log.add_message(Message("You are in the looking mode", tcod.light_green))
-                if isinstance(event, tcod.event.MouseButtonDown):
-                    message_log.clear_log()
-                    message_log.add_message(get_names_under_mouse(event, entities, fov_map))
-                    game_state = GameStates.PLAYER_TURN
+            if isinstance(event, tcod.event.MouseButtonDown):
+                mouse_action = handle_mouse(event, game_state)
+                left_click = mouse_action.get("left_click")
+                right_click = mouse_action.get("right_click")
             if look_enemy and game_state == GameStates.PLAYER_TURN:
                 game_state = GameStates.LOOK_ENEMY
+                player_turn_results.extend([{'message': Message('You are in the looking mode', tcod.green)}])
             elif look_enemy and game_state == GameStates.LOOK_ENEMY:
                 game_state = GameStates.PLAYER_TURN
+            elif left_click and game_state == GameStates.LOOK_ENEMY:
+                entities_at_location = check_entity_at_location(entities, left_click[0], left_click[1])
+                player_turn_results.extend(entities_at_location)
             elif pickup and game_state == GameStates.PLAYER_TURN:
                 for entity in entities:
                     if entity.item and entity.x == player.x and entity.y == player.y:
@@ -157,6 +162,7 @@ def main():
             for player_turn_result in player_turn_results:
                 message = player_turn_result.get('message')
                 dead_entity = player_turn_result.get('dead')
+                entity_identified = player_turn_result.get("entity_identified")
                 item_added = player_turn_result.get('item_added')
                 item_consumed = player_turn_result.get('consumed')
                 item_dropped = player_turn_result.get('item_dropped')
@@ -181,6 +187,9 @@ def main():
                 if item_dropped:
                     entities.append(item_dropped)
                     game_state = GameStates.ENEMY_TURN
+
+                if entity_identified:
+                    game_state = GameStates.PLAYER_TURN
 
             if game_state == GameStates.ENEMY_TURN:
                 for entity in entities:

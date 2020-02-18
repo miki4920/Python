@@ -1,7 +1,7 @@
 {
   "attributes": {
     "HP": "4d10+12",
-    "AC": "18",
+    "AC": "40",
     "Speed": "30"
   },
   "statistics": {

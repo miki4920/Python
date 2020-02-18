@@ -19,7 +19,7 @@ def kill_monster(monster):
     monster.blocks = False
     monster.fighter = None
     monster.ai = None
-    monster.name = 'The Remains of' + monster.name
+    monster.name = 'The Remains of ' + monster.name
     monster.render_order = RenderOrder.CORPSE
 
     return Message(death_message, tcod.orange)

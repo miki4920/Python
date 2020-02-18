@@ -1,6 +1,6 @@
 import tcod
+import tcod.event
 
-from game_messages import Message
 from game_states import GameStates, MenuState
 
 
@@ -29,17 +29,15 @@ def handle_player_turn_keys(key):
     elif key.sym == 1073741915:  # 3 on NUM
         # Moves one tile down and one right
         return {'move': (1, 1)}
-
     elif key.sym == 1073741909:
         # Sets a enemy checkup
-        return {'look_enemy': GameStates.PLAYER_DEAD}
+        return {'look_enemy': True}
     elif key.sym == 1073741912:  # Enter on Numpad
         return {'pickup': True}
     elif key.sym == 1073741923:  # . on Numpad
         return {'show_inventory': True}
     elif key.sym == 1073741922:  # 0 on Numpad
         return {'drop_inventory': True}
-
     elif key.sym == 1073741892:  # F11 Key
         # Sets full screen
         return {'fullscreen': True}
@@ -53,6 +51,9 @@ def handle_player_turn_keys(key):
 def handle_player_dead_keys(key):
     if key.sym == 1073741923:
         return {'show_inventory': True}
+    elif key.sym == 1073741909:
+        # Sets a enemy checkup
+        return {'look_enemy': True}
     elif key.sym == 1073741892:  # F11 Key
         # Sets full screen
         return {'fullscreen': True}
@@ -82,10 +83,17 @@ def handle_inventory_keys(key):
     return {}
 
 
+def handle_looking_keys(key):
+    if key.sym == 27:
+        return {'leave': True}
+    elif key.sym == 1073741909:
+        return {'look_enemy': True}
+    return {}
+
+
 def handle_targeting_keys(key):
     if key.sym == 27:
-        return {'exit': True}
-
+        return {'leave': True}
     return {}
 
 
@@ -94,6 +102,8 @@ def handle_keys(key, game_state):
         return handle_player_turn_keys(key)
     elif game_state == GameStates.PLAYER_DEAD:
         return handle_player_dead_keys(key)
+    elif game_state == GameStates.LOOK_ENEMY:
+        return handle_looking_keys(key)
     elif game_state == GameStates.TARGETING:
         return handle_targeting_keys(key)
     elif game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY):
@@ -101,11 +111,10 @@ def handle_keys(key, game_state):
     return {}
 
 
-def get_names_under_mouse(mouse, entities, fov_map):
+def handle_mouse(mouse, game_state):
     x, y = mouse.tile
-
-    names = [entity.name for entity in entities
-             if entity.x == x and entity.y == y and tcod.map_is_in_fov(fov_map, entity.x, entity.y)]
-    names = ', '.join(names)
-
-    return Message(names.capitalize(), tcod.light_green)
+    if mouse.button == tcod.event.BUTTON_LEFT:
+        return {'left_click': (x, y)}
+    elif mouse.button == tcod.event.BUTTON_RIGHT:
+        return {'right_click': (x, y)}
+    return {}

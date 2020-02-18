@@ -3,6 +3,7 @@ from decimal import Decimal, ROUND_HALF_UP
 import tcod
 
 from fov_functions import initialize_fov
+from game_messages import Message
 from render_functions import RenderOrder
 
 
@@ -81,3 +82,19 @@ def get_blocking_entities_at_location(entities, destination_x, destination_y):
             return entity
 
     return None
+
+
+def get_all_entities_at_location(entities, destination_x, destination_y):
+    return [entity for entity in entities if destination_x == entity.x and destination_y == entity.y]
+
+
+def check_entity_at_location(entities, x, y):
+    results = []
+    entities = get_all_entities_at_location(entities, x, y)
+    if entities:
+        for entity in entities:
+            if entity.render_order in (RenderOrder.CORPSE, RenderOrder.ACTOR, RenderOrder.ITEM):
+                results.append({'message': Message(entity.name, tcod.yellow)})
+    else:
+        results.append({'message': Message(f'There is nothing here', tcod.yellow)})
+    return results
