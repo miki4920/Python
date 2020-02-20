@@ -57,7 +57,7 @@ class Entity(object):
             if entity.blocks and entity != self and entity != target:
                 # Set the tile as a wall so it must be navigated around
                 tcod.map_set_properties(fov, entity.x, entity.y, True, False)
-        my_path = tcod.path_new_using_map(fov, 1.41)
+        my_path = tcod.path_new_using_map(fov, 1)
         tcod.path_compute(my_path, self.x, self.y, target.x, target.y)
         if not tcod.path_is_empty(my_path) and tcod.path_size(my_path) < 25:
             # Find the next coordinates in the computed full path
@@ -73,6 +73,11 @@ class Entity(object):
     def distance_to(self, other):
         dx = other.x - self.x
         dy = other.y - self.y
+        return max(abs(dx), abs(dy))
+
+    def distance(self, x, y):
+        dx = x - self.x
+        dy = y - self.y
         return max(abs(dx), abs(dy))
 
 

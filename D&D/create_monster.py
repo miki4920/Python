@@ -66,7 +66,7 @@ def generate_creatures(cr):
             if choice == 1:
                 current_monsters.append(random.choice(monster_dictionary.get(str(cr))))
             elif choice == 2:
-                for i in range(0, monster_group_max):
+                for i in range(0, random.randint(1, monster_group_max)):
                     current_monsters.append(
                         random.choice(monster_dictionary.get(round_to_nearest(cr / monster_group_max))))
         return current_monsters

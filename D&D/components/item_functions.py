@@ -18,7 +18,12 @@ def heal(*args, **kwargs):
     return results
 
 
-def cast_fireball(*args, **kwargs):
+def make_range_attack(*args, **kwargs):
+    pass
+
+
+def cast_spell(*args, **kwargs):
+    spell_name = kwargs.get("spell_name")
     entities = kwargs.get('entities')
     fov_map = kwargs.get('fov_map')
     damage = kwargs.get('damage')
@@ -34,13 +39,15 @@ def cast_fireball(*args, **kwargs):
         return results
 
     results.append({'consumed': True,
-                    'message': Message('The fireball explodes, burning everything within {0} tiles!'.format(radius),
+                    'message': Message(f'The {spell_name} explodes, burning everything within {radius} tiles!',
                                        tcod.orange)})
 
     for entity in entities:
         if entity.distance(target_x, target_y) <= radius and entity.fighter:
-            results.append({'message': Message('The {0} gets burned for {1} hit points.'.format(entity.name, damage),
+            rolled_damage = damage.roll_dice()
+            results.append(
+                {'message': Message('The {0} gets burned for {1} hit points.'.format(entity.name, rolled_damage),
                                                tcod.orange)})
-            results.extend(entity.fighter.take_damage(damage))
+            results.extend(entity.fighter.take_damage(rolled_damage))
 
     return results

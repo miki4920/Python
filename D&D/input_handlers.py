@@ -67,10 +67,10 @@ def handle_inventory_keys(key):
     index = MenuState.menu_state
     if key.sym == 1073741920:  # 8 on NUM
         # Increments index
-        index += 1
+        index -= 1
     elif key.sym == 1073741914:  # 2 on NUM
         # Decrements index
-        index -= 1
+        index += 1
     elif key.sym == 1073741912:
         return {'inventory_index': MenuState.menu_state}
     elif key.sym == 1073741892:  # F11 Key
