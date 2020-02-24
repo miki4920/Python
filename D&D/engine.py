@@ -71,6 +71,7 @@ def main():
                                       "First Game", order="C", renderer=tcod.RENDERER_SDL2, vsync=True)
     con = tcod.console.Console(screen_width, screen_height)
     panel = tcod.console.Console(screen_width, panel_height)
+    targeting_item = None
     while True:
         if fov_recompute:
             recompute_fov(fov_map, player.x, player.y, fov_radius, fov_light_walls, fov_algorithm)
@@ -89,9 +90,7 @@ def main():
             inventory_index = None
             leave = None
             fullscreen = None
-            look_enemy = None
             player_turn_results = []
-            targeting_item = None
             if isinstance(event, tcod.event.KeyDown):
                 action = handle_keys(event, game_state)
                 move = action.get("move")
@@ -102,7 +101,6 @@ def main():
                 inventory_index = action.get("inventory_index")
                 leave = action.get("leave")
                 fullscreen = action.get("fullscreen")
-                look_enemy = action.get("look_enemy")
             if isinstance(event, tcod.event.MouseButtonDown):
                 mouse_action = handle_mouse(event, game_state)
                 left_click = mouse_action.get("left_click")
@@ -138,9 +136,8 @@ def main():
                 elif game_state == GameStates.DROP_INVENTORY:
                     player_turn_results.extend(player.inventory.drop_item(item))
             elif game_state == GameStates.TARGETING:
-                if left_click:
+                if left_click and targeting_item:
                     target_x, target_y = left_click
-
                     item_use_results = player.inventory.use(targeting_item, entities=entities, fov_map=fov_map,
                                                             target_x=target_x, target_y=target_y)
                     player_turn_results.extend(item_use_results)
@@ -208,9 +205,7 @@ def main():
                 if targeting:
                     previous_game_state = GameStates.PLAYER_TURN
                     game_state = GameStates.TARGETING
-
                     targeting_item = targeting
-
                     message_log.add_message(targeting_item.item.targeting_message)
 
                 if targeting_cancelled:

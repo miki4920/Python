@@ -6,7 +6,7 @@ from components.ai import BasicMonster
 from components.dice import DiceRoll
 from components.fighter import Fighter
 from components.item import Item
-from components.item_functions import heal, cast_spell
+from components.item_functions import heal, range_attack
 from create_monster import generate_creatures
 from entity import Entity
 from game_messages import Message
@@ -34,17 +34,25 @@ def place_entities(room, entities, monster_difficulty, max_items_per_room):
         x = randint(room.x1 + 1, room.x2 - 1)
         y = randint(room.y1 + 1, room.y2 - 1)
         if not any([entity for entity in entities if entity.x == x and entity.y == y]):
-            if item_chance < 50:
+            if item_chance < 10:
                 item_component = Item(use_function=heal, amount="2d4+2")
                 item = Entity(x, y, '+', tcod.pink, 'Healing Potion', render_order=RenderOrder.ITEM,
                               item=item_component)
-            else:
-                item_component = Item(spell_name="fireball", use_function=cast_spell, targeting=True,
+            elif item_chance < 20:
+                item_component = Item(attack_name="fireball", use_function=range_attack, targeting=True,
                                       targeting_message=Message(
                                           'Left-click a target tile for the fireball, or right-click to cancel.',
                                           tcod.light_cyan),
-                                      damage=DiceRoll("2d12"), radius=3)
+                                      damage=DiceRoll("2d12"), radius=3, range=10, attack_type='sphere')
                 item = Entity(x, y, '#', tcod.red, 'Fireball Scroll', render_order=RenderOrder.ITEM,
+                              item=item_component)
+            else:
+                item_component = Item(attack_name="dart", use_function=range_attack, targeting=True,
+                                      targeting_message=Message(
+                                          'Left-click a target tile for the dart, or right-click to cancel.',
+                                          tcod.light_cyan),
+                                      damage=DiceRoll("2d12"), radius=0, range=3, attack_type='sphere')
+                item = Entity(x, y, '>', tcod.red, 'Dart', render_order=RenderOrder.ITEM,
                               item=item_component)
             entities.append(item)
 

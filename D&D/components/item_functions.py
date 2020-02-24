@@ -1,6 +1,7 @@
 import tcod
 
 from game_messages import Message
+from components.range_functions import cast_sphere
 
 
 def heal(*args, **kwargs):
@@ -18,36 +19,20 @@ def heal(*args, **kwargs):
     return results
 
 
-def make_range_attack(*args, **kwargs):
-    pass
-
-
-def cast_spell(*args, **kwargs):
-    spell_name = kwargs.get("spell_name")
+def range_attack(*args, **kwargs):
+    attack_name = kwargs.get("attack_name")
     entities = kwargs.get('entities')
     fov_map = kwargs.get('fov_map')
     damage = kwargs.get('damage')
+    attack_range = kwargs.get('range')
     radius = kwargs.get('radius')
     target_x = kwargs.get('target_x')
     target_y = kwargs.get('target_y')
-
-    results = []
-
-    if not tcod.map_is_in_fov(fov_map, target_x, target_y):
-        results.append({'consumed': False,
-                        'message': Message('You cannot target a tile outside your field of view.', tcod.yellow)})
-        return results
-
-    results.append({'consumed': True,
-                    'message': Message(f'The {spell_name} explodes, burning everything within {radius} tiles!',
-                                       tcod.orange)})
-
-    for entity in entities:
-        if entity.distance(target_x, target_y) <= radius and entity.fighter:
-            rolled_damage = damage.roll_dice()
-            results.append(
-                {'message': Message('The {0} gets burned for {1} hit points.'.format(entity.name, rolled_damage),
-                                               tcod.orange)})
-            results.extend(entity.fighter.take_damage(rolled_damage))
-
+    attack_type = kwargs.get('attack_type')
+    if attack_type == 'sphere':
+        results = cast_sphere(attack_name, entities, fov_map, damage, attack_range, radius, target_x, target_y)
     return results
+
+
+
+
