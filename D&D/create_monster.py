@@ -1,5 +1,5 @@
 import json
-import random
+from random import choice, randint
 
 
 def get_attribute(attribute_name):
@@ -61,14 +61,14 @@ def generate_creatures(cr):
     try:
         with open("monsters/monster_dict.json", "r") as file:
             monster_dictionary = json.load(file)
-            choice = random.randint(1, 2)
+            choice_random = randint(1, 2)
             # Powerful Monster
-            if choice == 1:
-                current_monsters.append(random.choice(monster_dictionary.get(str(cr))))
-            elif choice == 2:
-                for i in range(0, random.randint(1, monster_group_max)):
+            if choice_random == 1:
+                current_monsters.append(choice(monster_dictionary.get(str(cr))))
+            elif choice_random == 2:
+                for i in range(0, randint(1, monster_group_max)):
                     current_monsters.append(
-                        random.choice(monster_dictionary.get(round_to_nearest(cr / monster_group_max))))
+                        choice(monster_dictionary.get(round_to_nearest(cr / monster_group_max))))
         return current_monsters
     except (json.JSONDecodeError, FileNotFoundError):
         print("There has been an error with the monster file")

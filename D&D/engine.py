@@ -215,6 +215,7 @@ def main():
             if game_state == GameStates.ENEMY_TURN:
                 for entity in entities:
                     if entity.ai:
+
                         enemy_turn_results = entity.ai.take_turn(player, fov_map, game_map, entities)
 
                         for enemy_turn_result in enemy_turn_results:

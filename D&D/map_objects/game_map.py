@@ -2,7 +2,7 @@ from random import randint
 
 import tcod
 
-from components.ai import BasicMonster
+from components.ai import BasicMonster, SkirmishMonster
 from components.dice import DiceRoll
 from components.fighter import Fighter
 from components.item import Item
@@ -25,7 +25,10 @@ def place_entities(room, entities, monster_difficulty, max_items_per_room):
         y = randint(room.y1 + 1, room.y2 - 1)
         if not any([entity for entity in entities if entity.x == x and entity.y == y]):
             fighter_component = Fighter(monster)
-            ai_component = BasicMonster()
+            if monster == "Goblin":
+                ai_component = SkirmishMonster()
+            else:
+                ai_component = BasicMonster()
             monster = Entity(x, y, f'{monster[0]}', tcod.desaturated_green, f"{monster}", blocks=True,
                              render_order=RenderOrder.ACTOR, fighter=fighter_component, ai=ai_component)
             entities.append(monster)

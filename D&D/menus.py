@@ -1,4 +1,4 @@
-import tcod as tcod
+import tcod
 
 from game_states import MenuState
 

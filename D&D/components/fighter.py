@@ -45,11 +45,31 @@ class Fighter(object):
         return results
 
     def attack(self, target):
-        attack_stats = self.actions[choice(list(self.actions.keys()))]
-        attack_roll = DiceRoll("1d20+" + attack_stats.get("HIT")).roll_dice()
+        attack_weapon = self.actions[choice(list(self.actions.keys()))]
+        attack_roll = DiceRoll("1d20+" + attack_weapon.get("HIT")).roll_dice()
         results = []
         if attack_roll >= target.fighter.ac:
-            damage = DiceRoll(attack_stats.get("DAMAGE")).roll_dice()
+            damage = DiceRoll(attack_weapon.get("DAMAGE")).roll_dice()
+            if damage > 0:
+                results.append({'message': Message('{0} attacks {1} for {2} hit points.'.format(
+                    self.owner.name.capitalize(), target.name, str(damage)), tcod.yellow)})
+                results.extend(target.fighter.take_damage(damage))
+            else:
+                results.append({'message': Message('{0} attacks {1} but does no damage.'.format(
+                    self.owner.name.capitalize(), target.name), tcod.white)})
+        else:
+            results.append({'message': Message('{0} attacks {1} but misses.'.format(
+                self.owner.name.capitalize(), target.name))})
+        return results
+
+    def range_attack(self, target):
+        attack_weapon = {}
+        while attack_weapon.get("RANGE") != "YES":
+            attack_weapon = self.actions[choice(list(self.actions.keys()))]
+        attack_roll = DiceRoll("1d20+" + attack_weapon.get("HIT")).roll_dice()
+        results = []
+        if attack_roll >= target.fighter.ac:
+            damage = DiceRoll(attack_weapon.get("DAMAGE")).roll_dice()
             if damage > 0:
                 results.append({'message': Message('{0} attacks {1} for {2} hit points.'.format(
                     self.owner.name.capitalize(), target.name, str(damage)), tcod.yellow)})

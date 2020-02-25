@@ -39,16 +39,28 @@ class Entity(object):
         self.x += dx
         self.y += dy
 
-    def move_towards(self, target_x, target_y, game_map, entities):
-        dx = target_x-self.x
-        dy = target_y-self.y
+    def calculate_movement(self, target_x, target_y):
+        dx = target_x - self.x
+        dy = target_y - self.y
         distance = max(abs(dx), abs(dy))
-        dx = int(Decimal(dx/distance).to_integral_value(rounding=ROUND_HALF_UP))
-        dy = int(Decimal(dy/distance).to_integral_value(rounding=ROUND_HALF_UP))
+        dx = int(Decimal(dx / distance).to_integral_value(rounding=ROUND_HALF_UP))
+        dy = int(Decimal(dy / distance).to_integral_value(rounding=ROUND_HALF_UP))
+        return dx, dy
 
+    def move_towards(self, target_x, target_y, game_map, entities):
+        dx, dy = self.calculate_movement(target_x, target_y)
         if not (game_map.is_blocked(self.x + dx, self.y + dy) or
                 get_blocking_entities_at_location(entities, self.x + dx, self.y + dy)):
             self.move(dx, dy)
+
+    def move_away(self, target_x, target_y, game_map, entities):
+        dx, dy = self.calculate_movement(target_x, target_y)
+        if self.blocked(game_map, entities, -dx, -dy):
+            self.move(-dx, -dy)
+        elif self.blocked(game_map, entities, -dx, dy):
+            self.move(-dx, dy)
+        elif self.blocked(game_map, entities, dx, -dy):
+            self.move(dx, -dy)
 
     def move_astar(self, target, entities, game_map):
         # Create a FOV map that has the dimensions of the map
@@ -79,6 +91,12 @@ class Entity(object):
         dx = x - self.x
         dy = y - self.y
         return max(abs(dx), abs(dy))
+
+    def blocked(self, game_map, entities, dx, dy):
+        if not (game_map.is_blocked(self.x + dx, self.y + dy) or
+                get_blocking_entities_at_location(entities, self.x + dx, self.y + dy)):
+            return True
+        return False
 
 
 def get_blocking_entities_at_location(entities, destination_x, destination_y):

@@ -15,7 +15,8 @@
   "actions": {
     "0": {
       "HIT": "4",
-      "DAMAGE": "1d6+2"
+      "DAMAGE": "1d4",
+      "RANGE": "YES"
     },
     "1": {
       "HIT": "4",
