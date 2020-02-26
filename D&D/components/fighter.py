@@ -83,6 +83,9 @@ class Fighter(object):
         return results
 
     def heal(self, amount):
-        self.hp += DiceRoll(amount).roll_dice()
+        if type(amount) == int:
+            self.hp += amount
+        elif type(amount) == str:
+            self.hp += DiceRoll(amount).roll_dice()
         if self.hp > self.max_hp:
             self.hp = self.max_hp

@@ -38,10 +38,12 @@ def handle_player_turn_keys(key):
         return {'show_inventory': True}
     elif key.sym == 1073741922:  # 0 on Numpad
         return {'drop_inventory': True}
+    elif key.sym == 1073741910:
+        return {'take_stairs': True}
     elif key.sym == 1073741892:  # F11 Key
         # Sets full screen
         return {'fullscreen': True}
-    elif key.sym == 27:          # Escape Key
+    elif key.sym == 27:  # Escape Key
         # Exit the game
         return {'leave': True}
 

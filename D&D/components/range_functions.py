@@ -1,11 +1,12 @@
 import tcod
+
 from game_messages import Message
 
 
 def point_in_range(entities, attack_range, target_x, target_y):
     for entity in entities:
         if entity.name == 'Player':
-            if entity.distance(target_x, target_y) < attack_range:
+            if entity.distance(target_x, target_y) <= attack_range:
                 return True
     return False
 

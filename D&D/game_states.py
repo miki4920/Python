@@ -1,14 +1,14 @@
-from enum import Enum
+from enum import Enum, auto
 
 
 class GameStates(Enum):
-    PLAYER_TURN = 1
-    ENEMY_TURN = 2
-    PLAYER_DEAD = 3
-    LOOK_ENEMY = 4
-    SHOW_INVENTORY = 5
-    DROP_INVENTORY = 6
-    TARGETING = 7
+    PLAYER_TURN = auto()
+    ENEMY_TURN = auto()
+    PLAYER_DEAD = auto()
+    LOOK_ENEMY = auto()
+    SHOW_INVENTORY = auto()
+    DROP_INVENTORY = auto()
+    TARGETING = auto()
 
 
 class MenuState:

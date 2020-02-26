@@ -2,81 +2,36 @@ import tcod
 import tcod.console
 import tcod.event
 
-from components.fighter import Fighter
-from components.inventory import Inventory
 from death_functions import kill_monster, kill_player
-from entity import Entity, get_blocking_entities_at_location, check_entity_at_location
+from entity import get_blocking_entities_at_location, check_entity_at_location
 from fov_functions import initialize_fov, recompute_fov
-from game_messages import MessageLog, Message
+from game_messages import Message
 from game_states import GameStates, MenuState
 from input_handlers import handle_keys, handle_mouse
-from map_objects.game_map import GameMap
-from render_functions import render_all, clear_all, RenderOrder
+from loader_functions.initialize_new_game import get_constants, get_game_variables
+from render_functions import render_all, clear_all
 
 
 def main():
-    # Screen Resolution
-    screen_width = 80
-    screen_height = 50
-    # Bar Resolution
-    bar_width = 20
-    panel_height = 7
-    panel_y = screen_height - panel_height
-    # Map Resolution
-    map_width = 80
-    map_height = 43
-    # Message Resolution
-    message_x = bar_width + 2
-    message_width = screen_width - bar_width - 2
-    message_height = panel_height - 1
-    # Room Statistics
-    room_max_size = 10
-    room_min_size = 6
-    max_rooms = 30
-    # Field of View
-    fov_algorithm = 0
-    fov_light_walls = True
-    fov_radius = 10
-    # Entities
-    monster_difficulty = 1
-    max_items_per_room = 2
-    # Color
-    colors = {
-        'dark_wall': tcod.Color(13, 13, 13),
-        'dark_ground': tcod.Color(25, 25, 38),
-        'light_wall': tcod.Color(0, 0, 26),
-        'light_ground': tcod.Color(50, 50, 77)
-    }
+    constants = get_constants()
     # Initiate entities
-    fighter_component = Fighter("player")
-    inventory_component = Inventory(26)
-    player = Entity(0, 0, "@", tcod.white, "Player", blocks=True, render_order=RenderOrder.ACTOR,
-                    fighter=fighter_component, inventory=inventory_component)
-    game_state = GameStates.PLAYER_TURN
-    previous_game_state = game_state
-    entities = [player]
-
+    player, entities, game_map, message_log, game_state, previous_game_state, targeting_item = \
+        get_game_variables(constants)
     tcod.console_set_custom_font("arial10x10.png", tcod.FONT_LAYOUT_TCOD | tcod.FONT_TYPE_GREYSCALE)
-
-    game_map = GameMap(map_width, map_height)
-    game_map.make_map(max_rooms, room_min_size, room_max_size, map_width, map_height, player, entities,
-                      monster_difficulty, max_items_per_room)
-
     fov_recompute = True
     fov_map = initialize_fov(game_map)
-
-    message_log = MessageLog(message_x, message_width, message_height)
-
-    root_con = tcod.console_init_root(screen_width, screen_height,
-                                      "First Game", order="C", renderer=tcod.RENDERER_SDL2, vsync=True)
-    con = tcod.console.Console(screen_width, screen_height)
-    panel = tcod.console.Console(screen_width, panel_height)
-    targeting_item = None
+    root_con = tcod.console_init_root(constants["screen_width"], constants["screen_height"],
+                                      constants["window_title"], order="C", renderer=tcod.RENDERER_SDL2, vsync=True)
+    con = tcod.console.Console(constants["screen_width"], constants["screen_height"])
+    panel = tcod.console.Console(constants["screen_width"], constants["panel_height"])
     while True:
         if fov_recompute:
-            recompute_fov(fov_map, player.x, player.y, fov_radius, fov_light_walls, fov_algorithm)
-        render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, message_log, screen_width,
-                   screen_height, bar_width, panel_y, colors, root_con, game_state)
+            recompute_fov(fov_map, player.x, player.y, constants['fov_radius'], constants['fov_light_walls'],
+                          constants['fov_algorithm'])
+        render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, message_log,
+                   constants["screen_width"],
+                   constants["screen_height"], constants["bar_width"], constants["panel_y"], constants["colors"],
+                   root_con, game_state)
         tcod.console_flush()
         clear_all(con, entities)
         for event in tcod.event.get():
@@ -88,6 +43,7 @@ def main():
             show_inventory = None
             drop_inventory = None
             inventory_index = None
+            take_stairs = None
             leave = None
             fullscreen = None
             player_turn_results = []
@@ -99,6 +55,7 @@ def main():
                 show_inventory = action.get("show_inventory")
                 drop_inventory = action.get("drop_inventory")
                 inventory_index = action.get("inventory_index")
+                take_stairs = action.get('take_stairs')
                 leave = action.get("leave")
                 fullscreen = action.get("fullscreen")
             if isinstance(event, tcod.event.MouseButtonDown):
@@ -157,6 +114,17 @@ def main():
 
                         fov_recompute = True
                     game_state = GameStates.ENEMY_TURN
+            elif take_stairs and game_state == GameStates.PLAYER_TURN:
+                for entity in entities:
+                    if entity.stairs and entity.x == player.x and entity.y == player.y:
+                        entities = game_map.next_floor(player, message_log, constants)
+                        fov_map = initialize_fov(game_map)
+                        fov_recompute = True
+                        con.clear(fg=(63, 127, 63))
+
+                        break
+                else:
+                    message_log.add_message(Message('There are no stairs here.', tcod.yellow))
             if leave:
                 if game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY):
                     game_state = previous_game_state
