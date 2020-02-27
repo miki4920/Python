@@ -27,6 +27,9 @@ class Fighter(object):
         self.max_hp = int(DiceRoll(attributes.get("HP")).roll_dice())
         self.hp = int(self.max_hp)
         self.ac = int(attributes.get("AC"))
+        self.xp = attributes.get("XP")
+        if self.xp:
+            self.xp = int(self.xp)
         self.speed = int(attributes.get("Speed"))
         stats = statistics.get("statistics")
         self.str = stat_conversion(stats["STR"])
@@ -44,8 +47,7 @@ class Fighter(object):
             results.append({"dead": self.owner})
         return results
 
-    def attack(self, target):
-        attack_weapon = self.actions[choice(list(self.actions.keys()))]
+    def attack(self, target, attack_weapon, attack_message, no_damage_message, miss_message):
         attack_roll = DiceRoll("1d20+" + attack_weapon.get("HIT")).roll_dice()
         results = []
         if attack_roll >= target.fighter.ac:
@@ -62,25 +64,21 @@ class Fighter(object):
                 self.owner.name.capitalize(), target.name))})
         return results
 
+    def melee_attack(self, target):
+        attack_weapon = self.actions[choice(list(self.actions.keys()))]
+        attack_message = '{0} attacks {1} for {2} hit points.'
+        no_damage_message = '{0} attacks {1} but does no damage.'
+        miss_message = '{0} attacks {1} but misses.'
+        return self.attack(target, attack_weapon, attack_message, no_damage_message, miss_message)
+
     def range_attack(self, target):
         attack_weapon = {}
         while attack_weapon.get("RANGE") != "YES":
             attack_weapon = self.actions[choice(list(self.actions.keys()))]
-        attack_roll = DiceRoll("1d20+" + attack_weapon.get("HIT")).roll_dice()
-        results = []
-        if attack_roll >= target.fighter.ac:
-            damage = DiceRoll(attack_weapon.get("DAMAGE")).roll_dice()
-            if damage > 0:
-                results.append({'message': Message('{0} attacks {1} for {2} hit points.'.format(
-                    self.owner.name.capitalize(), target.name, str(damage)), tcod.yellow)})
-                results.extend(target.fighter.take_damage(damage))
-            else:
-                results.append({'message': Message('{0} attacks {1} but does no damage.'.format(
-                    self.owner.name.capitalize(), target.name), tcod.white)})
-        else:
-            results.append({'message': Message('{0} attacks {1} but misses.'.format(
-                self.owner.name.capitalize(), target.name))})
-        return results
+        attack_message = '{0} shoots {1} and hits for {2} hit points.'
+        no_damage_message = '{0} shoots {1} but does no damage.'
+        miss_message = '{0} shoots {1} but misses.'
+        return self.attack(target, attack_weapon, attack_message, no_damage_message, miss_message)
 
     def heal(self, amount):
         if type(amount) == int:

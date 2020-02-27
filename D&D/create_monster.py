@@ -16,7 +16,7 @@ def get_attributes(required_stats):
 
 def action_maker():
     action = {}
-    action_attributes = ["HIT", "DAMAGE"]
+    action_attributes = ["HIT", "DAMAGE", "RANGE"]
     for attribute in action_attributes:
         action[attribute] = get_attribute(attribute)
     return action
@@ -45,7 +45,7 @@ def store_monster(monster, name, cr):
 
 def create_monster():
     name = get_attribute("name")
-    attributes = get_attributes(["HP", "AC", "Speed"])
+    attributes = get_attributes(["HP", "AC", "Speed", "XP"])
     statistics = get_attributes(["STR", "DEX", "CON", "INT", "WIS", "CHA"])
     cr = get_attribute("CR")
     actions = {}

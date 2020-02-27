@@ -35,7 +35,7 @@ def get_constants():
     fov_radius = 10
 
     monster_difficulty = 1
-    max_items_per_room = 2
+    max_items_per_room = 3
 
     colors = {
         'dark_wall': tcod.Color(13, 13, 13),

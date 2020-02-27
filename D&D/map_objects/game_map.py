@@ -38,11 +38,11 @@ def place_entities(room, entities, monster_difficulty, max_items_per_room):
         x = randint(room.x1 + 1, room.x2 - 1)
         y = randint(room.y1 + 1, room.y2 - 1)
         if not any([entity for entity in entities if entity.x == x and entity.y == y]):
-            if item_chance < 10:
+            if item_chance < 50:
                 item_component = Item(use_function=heal, amount="2d4+2")
                 item = Entity(x, y, '+', tcod.pink, 'Healing Potion', render_order=RenderOrder.ITEM,
                               item=item_component)
-            elif item_chance < 20:
+            elif item_chance < 60:
                 item_component = Item(attack_name="fireball", use_function=range_attack, targeting=True,
                                       targeting_message=Message(
                                           'Left-click a target tile for the fireball, or right-click to cancel.',
