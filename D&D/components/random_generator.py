@@ -3,9 +3,15 @@ from sys import maxsize
 
 
 def get_seed():
-    with open("data/seed.txt", "r") as f:
-        seed = int(f.read())
-    return seed
+    try:
+        with open("data/seed.txt", "r") as f:
+            seed = int(f.read())
+    except FileNotFoundError:
+        with open("data/seed.txt", "w") as f:
+            seed = random.randint(0, maxsize * 2 + 1)
+            f.write(str(random.randint(0, maxsize * 2 + 1)))
+    finally:
+        return seed
 
 
 def set_seed():
@@ -16,12 +22,8 @@ def set_seed():
 class NumberGenerator(object):
     def __init__(self):
         seed = get_seed()
-        if seed != 0:
-            random.seed(seed)
-            set_seed()
-        else:
-            set_seed()
-            random.seed(seed)
+        random.seed(seed)
+        set_seed()
 
     @staticmethod
     def random_integer(a, b):
