@@ -7,10 +7,13 @@ from game_messages import MessageLog
 from game_states import GameStates
 from map_objects.game_map import GameMap
 from render_functions import RenderOrder
+from components.random_generator import NumberGenerator
+import time
 
 
 def get_constants():
-    window_title = 'Roguelike Tutorial Revised'
+    number_generator = NumberGenerator()
+    window_title = 'Going Rogue!'
 
     screen_width = 80
     screen_height = 50

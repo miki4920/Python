@@ -1,7 +1,7 @@
 from random import randint
 
 import tcod
-
+from components.random_generator import NumberGenerator
 from components.ai import BasicMonster, SkirmishMonster
 from components.dice import DiceRoll
 from components.fighter import Fighter
@@ -143,9 +143,9 @@ class GameMap:
         return False
 
     def next_floor(self, player, message_log, constants):
+        NumberGenerator()
         self.dungeon_level += 1
         entities = [player]
-
         self.tiles = self.initialize_tiles()
         self.make_map(constants['max_rooms'], constants['room_min_size'], constants['room_max_size'],
                       constants['map_width'], constants['map_height'], player, entities,

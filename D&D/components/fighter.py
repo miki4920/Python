@@ -21,8 +21,6 @@ class Fighter(object):
     def __init__(self, name):
         self.name = name
         statistics = get_statistics(name)
-        if not statistics:
-            quit()
         attributes = statistics.get("attributes")
         self.max_hp = int(DiceRoll(attributes.get("HP")).roll_dice())
         self.hp = int(self.max_hp)
@@ -53,28 +51,39 @@ class Fighter(object):
         if attack_roll >= target.fighter.ac:
             damage = DiceRoll(attack_weapon.get("DAMAGE")).roll_dice()
             if damage > 0:
-                results.append({'message': Message('{0} attacks {1} for {2} hit points.'.format(
+                results.append({'message': Message(attack_message.format(
                     self.owner.name.capitalize(), target.name, str(damage)), tcod.yellow)})
                 results.extend(target.fighter.take_damage(damage))
             else:
-                results.append({'message': Message('{0} attacks {1} but does no damage.'.format(
+                results.append({'message': Message(no_damage_message.format(
                     self.owner.name.capitalize(), target.name), tcod.white)})
         else:
-            results.append({'message': Message('{0} attacks {1} but misses.'.format(
-                self.owner.name.capitalize(), target.name))})
+            results.append({'message': Message(miss_message.format(
+                self.owner.name.capitalize(), target.name), tcod.white)})
+        return results
+
+    def no_weapon(self, message):
+        results = [{'message': Message('The {0} does not have a valid {1} weapon'.format(
+            self.owner.name.capitalize(), message), tcod.red)}]
         return results
 
     def melee_attack(self, target):
-        attack_weapon = self.actions[choice(list(self.actions.keys()))]
+        melee_weapons = [self.actions[weapon] for weapon in self.actions.keys() if
+                         self.actions[weapon].get("RANGE") != "YES"]
+        if len(melee_weapons) == 0:
+            return self.no_weapon("melee")
+        attack_weapon = choice(melee_weapons)
         attack_message = '{0} attacks {1} for {2} hit points.'
         no_damage_message = '{0} attacks {1} but does no damage.'
         miss_message = '{0} attacks {1} but misses.'
         return self.attack(target, attack_weapon, attack_message, no_damage_message, miss_message)
 
     def range_attack(self, target):
-        attack_weapon = {}
-        while attack_weapon.get("RANGE") != "YES":
-            attack_weapon = self.actions[choice(list(self.actions.keys()))]
+        range_weapons = [self.actions[weapon] for weapon in self.actions.keys() if
+                         self.actions[weapon].get("RANGE") == "YES"]
+        if len(range_weapons) == 0:
+            return self.no_weapon("range")
+        attack_weapon = choice(range_weapons)
         attack_message = '{0} shoots {1} and hits for {2} hit points.'
         no_damage_message = '{0} shoots {1} but does no damage.'
         miss_message = '{0} shoots {1} but misses.'
