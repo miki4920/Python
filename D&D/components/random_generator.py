@@ -1,5 +1,5 @@
 import random
-import time
+from sys import maxsize
 
 
 def get_seed():
@@ -8,20 +8,20 @@ def get_seed():
     return seed
 
 
-def set_seed(seed=time.time()):
-    seed = int(seed)
+def set_seed():
     with open("data/seed.txt", "w") as f:
-        f.write(str(random.randint(0, seed)))
+        f.write(str(random.randint(0, maxsize * 2 + 1)))
 
 
 class NumberGenerator(object):
     def __init__(self):
         seed = get_seed()
-        random.seed(seed)
         if seed != 0:
-            set_seed(seed)
+            random.seed(seed)
+            set_seed()
         else:
             set_seed()
+            random.seed(seed)
 
     @staticmethod
     def random_integer(a, b):
