@@ -42,7 +42,7 @@ class Fighter(object):
         results = []
         self.hp -= amount
         if self.hp <= 0:
-            results.append({"dead": self.owner})
+            results.append({'dead': self.owner, 'xp': self.xp})
         return results
 
     def attack(self, target, attack_weapon, attack_message, no_damage_message, miss_message):

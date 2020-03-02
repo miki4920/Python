@@ -3,7 +3,7 @@ from enum import Enum, auto
 import tcod
 
 from game_states import GameStates
-from menus import inventory_menu
+from menus import inventory_menu, character_screen
 
 
 class RenderOrder(Enum):
@@ -53,8 +53,9 @@ def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, m
             inventory_title = 'Press the key next to an item to use it, or Esc to cancel.\n'
         else:
             inventory_title = 'Press the key next to an item to drop it, or Esc to cancel.\n'
-
         inventory_menu(con, inventory_title, player.inventory, 50, screen_width, screen_height, root)
+    elif game_state == GameStates.CHARACTER_SCREEN:
+        character_screen(player, 30, 10, screen_width, screen_height)
 
 
 def clear_all(con, entities):

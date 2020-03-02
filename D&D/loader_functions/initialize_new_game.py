@@ -2,13 +2,13 @@ import tcod
 
 from components.fighter import Fighter
 from components.inventory import Inventory
+from components.level import Level
 from entity import Entity
 from game_messages import MessageLog
 from game_states import GameStates
 from map_objects.game_map import GameMap
 from render_functions import RenderOrder
 from components.random_generator import NumberGenerator
-import time
 
 
 def get_constants():
@@ -76,8 +76,9 @@ def get_constants():
 def get_game_variables(constants):
     fighter_component = Fighter("player")
     inventory_component = Inventory(26)
+    level_component = Level()
     player = Entity(0, 0, "@", tcod.white, "Player", blocks=True, render_order=RenderOrder.ACTOR,
-                    fighter=fighter_component, inventory=inventory_component)
+                    fighter=fighter_component, inventory=inventory_component, level=level_component)
     game_state = GameStates.PLAYER_TURN
     previous_game_state = game_state
     entities = [player]

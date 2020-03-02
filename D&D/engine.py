@@ -10,6 +10,7 @@ from game_states import GameStates, MenuState
 from input_handlers import handle_keys, handle_mouse
 from loader_functions.initialize_new_game import get_constants, get_game_variables
 from render_functions import render_all, clear_all
+from components.dice import DiceRoll
 
 
 def main():
@@ -46,6 +47,7 @@ def main():
             take_stairs = None
             leave = None
             fullscreen = None
+            show_character_screen = None
             player_turn_results = []
             if isinstance(event, tcod.event.KeyDown):
                 action = handle_keys(event, game_state)
@@ -58,6 +60,7 @@ def main():
                 take_stairs = action.get('take_stairs')
                 leave = action.get("leave")
                 fullscreen = action.get("fullscreen")
+                show_character_screen = action.get('show_character_screen')
             if isinstance(event, tcod.event.MouseButtonDown):
                 mouse_action = handle_mouse(event, game_state)
                 left_click = mouse_action.get("left_click")
@@ -67,6 +70,7 @@ def main():
                 player_turn_results.extend([{'message': Message('You are in the looking mode', tcod.green)}])
             elif look_enemy and game_state == GameStates.LOOK_ENEMY:
                 game_state = GameStates.PLAYER_TURN
+                player_turn_results.extend([{'message': Message('You left the looking mode', tcod.green)}])
             elif left_click and game_state == GameStates.LOOK_ENEMY:
                 entities_at_location = check_entity_at_location(entities, left_click[0], left_click[1])
                 player_turn_results.extend(entities_at_location)
@@ -125,8 +129,14 @@ def main():
                         break
                 else:
                     message_log.add_message(Message('There are no stairs here.', tcod.yellow))
+            elif game_state == GameStates.LEVEL_UP:
+                player.fighter.max_hp += DiceRoll("1d8").roll_dice()
+                game_state = previous_game_state
+            elif show_character_screen:
+                previous_game_state = game_state
+                game_state = GameStates.CHARACTER_SCREEN
             if leave:
-                if game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY):
+                if game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY, GameStates.CHARACTER_SCREEN):
                     game_state = previous_game_state
                 elif game_state == GameStates.TARGETING:
                     player_turn_results.append({'targeting_cancelled': True})
@@ -145,6 +155,7 @@ def main():
                 item_dropped = player_turn_result.get('item_dropped')
                 targeting = player_turn_result.get('targeting')
                 targeting_cancelled = player_turn_result.get('targeting_cancelled')
+                xp = player_turn_result.get('xp')
                 if message:
                     message_log.add_message(message)
 
@@ -179,6 +190,17 @@ def main():
                 if targeting_cancelled:
                     game_state = previous_game_state
                     message_log.add_message(Message('Targeting cancelled'))
+
+                if xp:
+                    leveled_up = player.level.add_xp(xp)
+                    message_log.add_message(Message('You gain {0} experience points.'.format(xp)))
+
+                    if leveled_up:
+                        message_log.add_message(Message(
+                            'Your battle skills grow stronger! You reached level {0}'.format(
+                                player.level.current_level) + '!', tcod.yellow))
+                        previous_game_state = game_state
+                        game_state = GameStates.LEVEL_UP
 
             if game_state == GameStates.ENEMY_TURN:
                 for entity in entities:
