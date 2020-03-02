@@ -1,17 +1,20 @@
 import random
 from sys import maxsize
+import os
 
 
 def get_seed():
-    try:
-        with open("data/seed.txt", "r") as f:
-            seed = int(f.read())
-    except FileNotFoundError:
+    if not os.path.exists("data"):
+        os.mkdir("data")
+    if not os.path.exists("data/seed.txt"):
         with open("data/seed.txt", "w") as f:
             seed = random.randint(0, maxsize * 2 + 1)
             f.write(str(random.randint(0, maxsize * 2 + 1)))
-    finally:
-        return seed
+    else:
+        with open("data/seed.txt", "r") as f:
+            seed = int(f.read())
+
+    return seed
 
 
 def set_seed():
