@@ -1,7 +1,7 @@
 from random import randint
 
 import tcod
-from components.random_generator import NumberGenerator
+from utility_functions.random_generator import NumberGenerator
 from components.ai import BasicMonster, SkirmishMonster
 from components.dice import DiceRoll
 from components.fighter import Fighter

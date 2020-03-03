@@ -4,39 +4,47 @@ from random import choice
 import tcod
 
 from components.dice import DiceRoll
-from create_monster import get_statistics
+from create_monster import get_data
 from game_messages import Message
 
 
-def stat_conversion(stat):
-    stat = int(stat)
-    if stat > 11:
-        stat = int(floor((stat - 10) / 2))
-    else:
-        stat = -int(floor((11 - stat) / 2))
-    return stat
+def check_property(item, attribute):
+    if item.get(attribute) == "YES":
+        return True
+    return False
+
+
+def handle_xp(attributes):
+    xp = attributes.get("XP")
+    if xp:
+        xp = int(xp)
+    return xp
+
+
+def stat_conversion(statistics):
+    for stat in statistics:
+        stat_value = int(statistics[stat])
+        if stat_value > 11:
+            stat_value = int(floor((stat_value - 10) / 2))
+        else:
+            stat_value = -int(floor((11 - stat_value) / 2))
+        statistics[stat] = stat_value
+    return statistics
 
 
 class Fighter(object):
     def __init__(self, name):
         self.name = name
-        statistics = get_statistics(name)
-        attributes = statistics.get("attributes")
+        data = get_data(name)
+        attributes = data.get("attributes")
         self.max_hp = int(DiceRoll(attributes.get("HP")).roll_dice())
         self.hp = int(self.max_hp)
         self.ac = int(attributes.get("AC"))
-        self.xp = attributes.get("XP")
-        if self.xp:
-            self.xp = int(self.xp)
+        self.xp = handle_xp(attributes)
         self.speed = int(attributes.get("Speed"))
-        stats = statistics.get("statistics")
-        self.str = stat_conversion(stats["STR"])
-        self.dex = stat_conversion(stats["DEX"])
-        self.con = stat_conversion(stats["CON"])
-        self.int = stat_conversion(stats["INT"])
-        self.wis = stat_conversion(stats["WIS"])
-        self.cha = stat_conversion(stats["CHA"])
-        self.actions = statistics.get("actions")
+        self.statistics = stat_conversion(data.get("statistics"))
+        self.actions = data.get("actions")
+        self.finesse = check_property(data.get("properties"), "FINESSE")
 
     def take_damage(self, amount):
         results = []

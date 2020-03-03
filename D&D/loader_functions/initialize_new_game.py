@@ -8,7 +8,7 @@ from game_messages import MessageLog
 from game_states import GameStates
 from map_objects.game_map import GameMap
 from render_functions import RenderOrder
-from components.random_generator import NumberGenerator
+from utility_functions.random_generator import NumberGenerator
 
 
 def get_constants():

@@ -13,6 +13,9 @@
     "WIS": "10",
     "CHA": "9"
   },
+  "properties": {
+    "FINESSE": "NO"
+  },
   "actions": {
     "0": {
       "HIT": "4",
