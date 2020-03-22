@@ -1,7 +1,7 @@
 {
   "attributes": {
-    "HP": "4d10+12",
-    "AC": "40",
+    "HP": "1000",
+    "AC": "10",
     "Speed": "30"
   },
   "statistics": {
@@ -12,10 +12,13 @@
     "WIS": "8",
     "CHA": "8"
   },
+  "properties": {
+    "FINESSE": "NO"
+  },
   "actions": {
     "0": {
-      "HIT": "10",
-      "DAMAGE": "4d12+4"
+      "HIT": "2",
+      "DAMAGE": "1d12+2"
     }
   }
 }

@@ -1,7 +1,7 @@
 from random import randint
 
 import tcod
-
+from utility_functions.random_generator import NumberGenerator
 from components.ai import BasicMonster, SkirmishMonster
 from components.dice import DiceRoll
 from components.fighter import Fighter
@@ -38,11 +38,11 @@ def place_entities(room, entities, monster_difficulty, max_items_per_room):
         x = randint(room.x1 + 1, room.x2 - 1)
         y = randint(room.y1 + 1, room.y2 - 1)
         if not any([entity for entity in entities if entity.x == x and entity.y == y]):
-            if item_chance < 10:
+            if item_chance < 50:
                 item_component = Item(use_function=heal, amount="2d4+2")
                 item = Entity(x, y, '+', tcod.pink, 'Healing Potion', render_order=RenderOrder.ITEM,
                               item=item_component)
-            elif item_chance < 20:
+            elif item_chance < 60:
                 item_component = Item(attack_name="fireball", use_function=range_attack, targeting=True,
                                       targeting_message=Message(
                                           'Left-click a target tile for the fireball, or right-click to cancel.',
@@ -143,9 +143,9 @@ class GameMap:
         return False
 
     def next_floor(self, player, message_log, constants):
+        NumberGenerator()
         self.dungeon_level += 1
         entities = [player]
-
         self.tiles = self.initialize_tiles()
         self.make_map(constants['max_rooms'], constants['room_min_size'], constants['room_max_size'],
                       constants['map_width'], constants['map_height'], player, entities,

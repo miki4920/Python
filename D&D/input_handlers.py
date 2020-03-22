@@ -46,7 +46,8 @@ def handle_player_turn_keys(key):
     elif key.sym == 27:  # Escape Key
         # Exit the game
         return {'leave': True}
-
+    elif key.sym == 1073741908:  # / on Numpad
+        return {'show_character_screen': True}
     return {}
 
 
@@ -81,6 +82,8 @@ def handle_inventory_keys(key):
     elif key.sym == 1073741923:  # Escape Key
         # Exit the game
         return {'leave': True}
+    elif key.sym == 1073741923:  # . on Numpad
+        return {'leave': True}
     MenuState.menu_state = index
     return {}
 
@@ -99,6 +102,12 @@ def handle_targeting_keys(key):
     return {}
 
 
+def handle_character_screen(key):
+    if key.sym == 1073741908:  # / on Numpad
+        return {'leave': True}
+    return {}
+
+
 def handle_keys(key, game_state):
     if game_state == GameStates.PLAYER_TURN:
         return handle_player_turn_keys(key)
@@ -110,6 +119,8 @@ def handle_keys(key, game_state):
         return handle_targeting_keys(key)
     elif game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY):
         return handle_inventory_keys(key)
+    elif game_state == GameStates.CHARACTER_SCREEN:
+        return handle_character_screen(key)
     return {}
 
 

@@ -2,15 +2,18 @@ import tcod
 
 from components.fighter import Fighter
 from components.inventory import Inventory
+from components.level import Level
 from entity import Entity
 from game_messages import MessageLog
 from game_states import GameStates
 from map_objects.game_map import GameMap
 from render_functions import RenderOrder
+from utility_functions.random_generator import NumberGenerator
 
 
 def get_constants():
-    window_title = 'Roguelike Tutorial Revised'
+    number_generator = NumberGenerator()
+    window_title = 'Going Rogue!'
 
     screen_width = 80
     screen_height = 50
@@ -35,7 +38,7 @@ def get_constants():
     fov_radius = 10
 
     monster_difficulty = 1
-    max_items_per_room = 2
+    max_items_per_room = 3
 
     colors = {
         'dark_wall': tcod.Color(13, 13, 13),
@@ -73,8 +76,9 @@ def get_constants():
 def get_game_variables(constants):
     fighter_component = Fighter("player")
     inventory_component = Inventory(26)
+    level_component = Level()
     player = Entity(0, 0, "@", tcod.white, "Player", blocks=True, render_order=RenderOrder.ACTOR,
-                    fighter=fighter_component, inventory=inventory_component)
+                    fighter=fighter_component, inventory=inventory_component, level=level_component)
     game_state = GameStates.PLAYER_TURN
     previous_game_state = game_state
     entities = [player]
