@@ -26,7 +26,7 @@
     "Actions": {
         "0": {
             "Name": "Shortsword",
-            "Damage": "11d6",
+            "Damage": "1d6",
             "Range": "5"
         },
         "1": {

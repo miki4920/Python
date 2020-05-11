@@ -116,7 +116,6 @@ def get_monster_arrangement(difficulty):
     choice = NumberGenerator.random_integer(1, 2)
     monsters = []
     if choice == 1:
-        print(difficulty)
         monsters = [get_monster_by_cr(difficulty)]
     elif choice == 2:
         nearest_cr = float(round_to_nearest(difficulty / 4))
