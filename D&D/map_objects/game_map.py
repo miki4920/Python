@@ -2,13 +2,12 @@ from random import randint
 
 import tcod
 from utility_functions.random_generator import NumberGenerator
-from components.ai import BasicMonster, SkirmishMonster
 from components.dice import DiceRoll
 from components.fighter import Fighter
 from components.item import Item
 from components.item_functions import heal, range_attack
 from components.stairs import Stairs
-from create_monster import generate_creatures
+from monster_functions import get_monster_ai, get_monster_arrangement
 from entity import Entity
 from game_messages import Message
 from map_objects.rectangle import Rect
@@ -16,48 +15,57 @@ from map_objects.tile import Tile
 from render_functions import RenderOrder
 
 
+def place_monster(room, entities, monster):
+    # Choose a random location in the room
+    x = randint(room.x1 + 1, room.x2 - 1)
+    y = randint(room.y1 + 1, room.y2 - 1)
+    if not any([entity for entity in entities if entity.x == x and entity.y == y]):
+        fighter_component = Fighter(monster)
+        ai_component = get_monster_ai(monster)
+        monster = Entity(x, y, f'{monster[0]}', tcod.desaturated_green, f"{monster}", blocks=True,
+                         render_order=RenderOrder.ACTOR, fighter=fighter_component, ai=ai_component)
+        return monster
+
+
+def place_item(room, entities):
+    item_chance = randint(0, 100)
+    x = randint(room.x1 + 1, room.x2 - 1)
+    y = randint(room.y1 + 1, room.y2 - 1)
+    if not any([entity for entity in entities if entity.x == x and entity.y == y]):
+        if item_chance < 50:
+            item_component = Item(use_function=heal, amount="2d4+2")
+            item = Entity(x, y, '+', tcod.pink, 'Healing Potion', render_order=RenderOrder.ITEM,
+                          item=item_component)
+        elif item_chance < 60:
+            item_component = Item(attack_name="fireball", use_function=range_attack, targeting=True,
+                                  targeting_message=Message(
+                                      'Left-click a target tile for the fireball, or right-click to cancel.',
+                                      tcod.light_cyan),
+                                  damage=DiceRoll("2d12"), radius=3, range=10, attack_type='sphere')
+            item = Entity(x, y, '#', tcod.red, 'Fireball Scroll', render_order=RenderOrder.ITEM,
+                          item=item_component)
+        else:
+            item_component = Item(attack_name="dart", use_function=range_attack, targeting=True,
+                                  targeting_message=Message(
+                                      'Left-click a target tile for the dart, or right-click to cancel.',
+                                      tcod.light_cyan),
+                                  damage=DiceRoll("2d12"), radius=0, range=3, attack_type='sphere')
+            item = Entity(x, y, '>', tcod.red, 'Dart', render_order=RenderOrder.ITEM,
+                          item=item_component)
+        return item
+
+
 def place_entities(room, entities, monster_difficulty, max_items_per_room):
     # Get a random number of monsters
-    monsters = generate_creatures(monster_difficulty)
+    monsters = get_monster_arrangement(monster_difficulty)
     number_of_items = randint(0, max_items_per_room)
     for monster in monsters:
-        # Choose a random location in the room
-        x = randint(room.x1 + 1, room.x2 - 1)
-        y = randint(room.y1 + 1, room.y2 - 1)
-        if not any([entity for entity in entities if entity.x == x and entity.y == y]):
-            fighter_component = Fighter(monster)
-            if monster == "Goblin":
-                ai_component = SkirmishMonster()
-            else:
-                ai_component = BasicMonster()
-            monster = Entity(x, y, f'{monster[0]}', tcod.desaturated_green, f"{monster}", blocks=True,
-                             render_order=RenderOrder.ACTOR, fighter=fighter_component, ai=ai_component)
+        monster = place_monster(room, entities, monster)
+        if monster:
             entities.append(monster)
     for i in range(number_of_items):
-        item_chance = randint(0, 100)
-        x = randint(room.x1 + 1, room.x2 - 1)
-        y = randint(room.y1 + 1, room.y2 - 1)
-        if not any([entity for entity in entities if entity.x == x and entity.y == y]):
-            if item_chance < 50:
-                item_component = Item(use_function=heal, amount="2d4+2")
-                item = Entity(x, y, '+', tcod.pink, 'Healing Potion', render_order=RenderOrder.ITEM,
-                              item=item_component)
-            elif item_chance < 60:
-                item_component = Item(attack_name="fireball", use_function=range_attack, targeting=True,
-                                      targeting_message=Message(
-                                          'Left-click a target tile for the fireball, or right-click to cancel.',
-                                          tcod.light_cyan),
-                                      damage=DiceRoll("2d12"), radius=3, range=10, attack_type='sphere')
-                item = Entity(x, y, '#', tcod.red, 'Fireball Scroll', render_order=RenderOrder.ITEM,
-                              item=item_component)
-            else:
-                item_component = Item(attack_name="dart", use_function=range_attack, targeting=True,
-                                      targeting_message=Message(
-                                          'Left-click a target tile for the dart, or right-click to cancel.',
-                                          tcod.light_cyan),
-                                      damage=DiceRoll("2d12"), radius=0, range=3, attack_type='sphere')
-                item = Entity(x, y, '>', tcod.red, 'Dart', render_order=RenderOrder.ITEM,
-                              item=item_component)
+        item = place_item(room, entities)
+        if item:
             entities.append(item)
 
 
@@ -149,7 +157,7 @@ class GameMap:
         self.tiles = self.initialize_tiles()
         self.make_map(constants['max_rooms'], constants['room_min_size'], constants['room_max_size'],
                       constants['map_width'], constants['map_height'], player, entities,
-                      constants['monster_difficulty'], constants['max_items_per_room'])
+                      float(player.fighter.cr), constants['max_items_per_room'])
         player.fighter.heal(player.fighter.max_hp // 2)
         message_log.add_message(Message('You take a moment to rest, and recover your strength.', tcod.light_violet))
         return entities

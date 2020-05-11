@@ -23,7 +23,8 @@ def set_seed():
 
 
 class NumberGenerator(object):
-    def __init__(self):
+    @staticmethod
+    def seed():
         seed = get_seed()
         random.seed(seed)
         set_seed()

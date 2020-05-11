@@ -199,13 +199,13 @@ def main():
                         message_log.add_message(Message(
                             'Your battle skills grow stronger! You reached level {0}'.format(
                                 player.level.current_level) + '!', tcod.yellow))
+                        player.fighter.cr = str(player.level.current_level/4)
                         previous_game_state = game_state
                         game_state = GameStates.LEVEL_UP
 
             if game_state == GameStates.ENEMY_TURN:
                 for entity in entities:
                     if entity.ai:
-
                         enemy_turn_results = entity.ai.take_turn(player, fov_map, game_map, entities)
 
                         for enemy_turn_result in enemy_turn_results:

@@ -1,0 +1,33 @@
+{
+    "Description": {
+        "Name": "Gray Ooze",
+        "Size": "Medium",
+        "Type": "Ooze",
+        "Alignment": "TN"
+    },
+    "Attributes": {
+        "HP": "3d8",
+        "AC": "8",
+        "CR": "0.5",
+        "Speed": "10"
+    },
+    "Statistics": {
+        "STR": "12",
+        "DEX": "6",
+        "CON": "16",
+        "INT": "1",
+        "WIS": "6",
+        "CHA": "2"
+    },
+    "Properties": {
+        "Finesse": "No",
+        "AI": "Basic"
+    },
+    "Actions": {
+        "0": {
+            "Name": "Pseudopod",
+            "Damage": "1d6+2d6",
+            "Range": "5"
+        }
+    }
+}

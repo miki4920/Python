@@ -1,0 +1,38 @@
+{
+    "Description": {
+        "Name": "Kobold",
+        "Size": "Small",
+        "Type": "Humanoid",
+        "Alignment": "LE"
+    },
+    "Attributes": {
+        "HP": "2d6",
+        "AC": "12",
+        "CR": "0.125",
+        "Speed": "30"
+    },
+    "Statistics": {
+        "STR": "7",
+        "DEX": "15",
+        "CON": "9",
+        "INT": "8",
+        "WIS": "7",
+        "CHA": "8"
+    },
+    "Properties": {
+        "Finesse": "Yes",
+        "AI": "Basic"
+    },
+    "Actions": {
+        "0": {
+            "Name": "Dagger",
+            "Damage": "1d4",
+            "Range": "5"
+        },
+        "1": {
+            "Name": "Sling",
+            "Damage": "1d4",
+            "Range": "30"
+        }
+    }
+}

@@ -1,0 +1,38 @@
+{
+    "Description": {
+        "Name": "Player",
+        "Size": "Medium",
+        "Type": "Humanoid",
+        "Alignment": "TN"
+    },
+    "Attributes": {
+        "HP": "1d8",
+        "AC": "40",
+        "CR": "0.25",
+        "Speed": "30"
+    },
+    "Statistics": {
+        "STR": "10",
+        "DEX": "10",
+        "CON": "10",
+        "INT": "10",
+        "WIS": "10",
+        "CHA": "10"
+    },
+    "Properties": {
+        "Finesse": "No",
+        "AI": "None"
+    },
+    "Actions": {
+        "0": {
+            "Name": "Shortsword",
+            "Damage": "11d6",
+            "Range": "5"
+        },
+        "1": {
+            "Name": "Shortbow",
+            "Damage": "1d6",
+            "Range": "80"
+        }
+    }
+}

@@ -19,19 +19,21 @@ def safe_open_w(path):
     return open(path, 'w')
 
 
-def write_json(path, content):
+def write_json(path, content, sorting=False):
+    path = get_main_path() + path
     with safe_open_w(path) as file:
-        json.dump(content, file, indent=4, sort_keys=True)
+        json.dump(content, file, indent=4, sort_keys=sorting)
 
 
 def read_json(path):
+    path = get_main_path() + path
     try:
         with open(path, "r") as file:
             content = json.load(file)
         return content
     except FileNotFoundError:
         print(f"File at the path {path} was not found")
-        quit()
+        return False
 
 
 def get_main_path():
@@ -42,7 +44,7 @@ def get_main_path():
 
 
 if __name__ == "__main__":
-    file_path = f"{get_main_path()}\\data\\monster_cr.json"
+    file_path = get_main_path() + "\\data\\monster_cr.json"
     print(file_path)
     file_content = {
         "Monster_CR": [0.125, 0.25, 0.5, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
