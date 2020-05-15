@@ -68,7 +68,7 @@ class PerlinNoise(object):
 
     @staticmethod
     def fade(t):
-        return t * t * (3 - (2 * t))
+        return (6 * (t ** 5)) - (15 * (t ** 4)) + (10 * (t ** 3))
 
     @staticmethod
     def linear(a, b, x):
@@ -82,10 +82,10 @@ class MapGenerator(object):
         self.bottom = min(self.data)
         self.top = max(self.data)
         self.scale = self.top-self.bottom
-        self.snow = 0.95
-        self.mountain = 0.9
-        self.large_hill = 0.8
-        self.hill = 0.6
+        self.snow = 0.99
+        self.mountain = 0.95
+        self.large_hill = 0.9
+        self.hill = 0.8
         self.plain = 0.4
         self.beach = 0.3
         self.shallow_water = 0.2
@@ -114,7 +114,7 @@ class MapGenerator(object):
                 self.data[i] = (0, 0, 89)
 
 
-size = 4096
+size = 256
 start = time.time()
 values = [(x/size, y/size) for x in range(0, size) for y in range(0, size)]
 noise_generator = PerlinNoise(6, persistence=1.4, frequency_factor=1.6)
