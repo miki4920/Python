@@ -19,6 +19,11 @@ def safe_open_w(path):
     return open(path, 'w')
 
 
+def check_existence(name):
+    mkdir_p(os.path.dirname(name))
+    return name
+
+
 def write_json(path, content, sorting=False):
     path = get_main_path() + path
     with safe_open_w(path) as file:

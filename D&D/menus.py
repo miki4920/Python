@@ -46,6 +46,18 @@ def inventory_menu(con, header, inventory, inventory_width, screen_width, screen
     menu(con, header, options, inventory_width, screen_width, screen_height, root)
 
 
+def main_menu(con, background_image, screen_width, screen_height, root):
+    tcod.image_blit_2x(background_image, root, 0, 0)
+
+    tcod.console_set_default_foreground(root, tcod.light_yellow)
+    tcod.console_print_ex(root, int(screen_width / 2), int(screen_height / 2) - 4, tcod.BKGND_NONE, tcod.CENTER,
+                          'GOBLINS & CAVES')
+    tcod.console_print_ex(root, int(screen_width / 2), int(screen_height - 2), tcod.BKGND_NONE, tcod.CENTER,
+                          'By Nicolas Grobelny')
+
+    menu(con, '', ['Play a new game', 'Continue last game', 'Quit'], 24, screen_width, screen_height, root)
+
+
 def character_screen(player, character_screen_width, character_screen_height, screen_width, screen_height):
     window = tcod.console_new(character_screen_width, character_screen_height)
 
@@ -70,3 +82,7 @@ def character_screen(player, character_screen_width, character_screen_height, sc
     x = screen_width // 2 - character_screen_width // 2
     y = screen_height // 2 - character_screen_height // 2
     tcod.console_blit(window, 0, 0, character_screen_width, character_screen_height, 0, x, y, 1.0, 0.7)
+
+
+def message_box(con, header, width, screen_width, screen_height):
+    menu(con, header, [], width, screen_width, screen_height)

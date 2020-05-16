@@ -7,7 +7,9 @@ from entity import get_blocking_entities_at_location, check_entity_at_location
 from fov_functions import initialize_fov, recompute_fov
 from game_messages import Message
 from game_states import GameStates, MenuState
-from input_handlers import handle_keys, handle_mouse
+from loader_functions.data_loaders import load_game, save_game
+from menus import main_menu, message_box
+from input_handlers import handle_keys, handle_mouse, handle_main_menu
 from loader_functions.initialize_new_game import get_constants, get_game_variables
 from render_functions import render_all, clear_all
 from components.dice import DiceRoll
@@ -15,16 +17,69 @@ from components.dice import DiceRoll
 
 def main():
     constants = get_constants()
+
+    tcod.console_set_custom_font('arial10x10.png', tcod.FONT_TYPE_GREYSCALE | tcod.FONT_LAYOUT_TCOD)
+
+    root_con = tcod.console_init_root(constants["screen_width"], constants["screen_height"],
+                                      constants["window_title"], order="C", renderer=tcod.RENDERER_SDL2, vsync=True)
+
+    con = tcod.console.Console(constants['screen_width'], constants['screen_height'])
+    panel = tcod.console.Console(constants['screen_width'], constants['panel_height'])
+
+    player = None
+    entities = []
+    game_map = None
+    message_log = None
+    game_state = None
+
+    show_main_menu = True
+    show_load_error_message = False
+
+    main_menu_background_image = tcod.image_load('menu_background.png')
+    while show_main_menu:
+        main_menu(con, main_menu_background_image, constants['screen_width'],
+                  constants['screen_height'], root_con)
+
+        if show_load_error_message:
+            message_box(con, 'No save game to load', 50, constants['screen_width'], constants['screen_height'])
+
+        tcod.console_flush()
+        action = {}
+        for event in tcod.event.get():
+            if isinstance(event, tcod.event.KeyDown):
+                action = handle_main_menu(event)
+
+        new_game = action.get('new_game')
+        load_saved_game = action.get('load_game')
+        exit_game = action.get('exit')
+
+        if show_load_error_message and (new_game or load_saved_game or exit_game):
+            show_load_error_message = False
+        elif new_game:
+            player, entities, game_map, message_log, game_state = get_game_variables(constants)
+            game_state = GameStates.PLAYER_TURN
+            show_main_menu = False
+        elif load_saved_game:
+            try:
+                player, entities, game_map, message_log, game_state = load_game()
+                show_main_menu = False
+            except FileNotFoundError:
+                show_load_error_message = True
+        elif exit_game:
+            quit()
+
+    con.clear()
+    play_game(player, entities, game_map, message_log, game_state, con, panel, constants, root_con)
+    show_main_menu = True
+
+
+def play_game(player, entities, game_map, message_log, game_state, con, panel, constants, root_con):
     # Initiate entities
-    player, entities, game_map, message_log, game_state, previous_game_state, targeting_item = \
-        get_game_variables(constants)
     tcod.console_set_custom_font("arial10x10.png", tcod.FONT_LAYOUT_TCOD | tcod.FONT_TYPE_GREYSCALE)
     fov_recompute = True
     fov_map = initialize_fov(game_map)
-    root_con = tcod.console_init_root(constants["screen_width"], constants["screen_height"],
-                                      constants["window_title"], order="C", renderer=tcod.RENDERER_SDL2, vsync=True)
-    con = tcod.console.Console(constants["screen_width"], constants["screen_height"])
-    panel = tcod.console.Console(constants["screen_width"], constants["panel_height"])
+    previous_game_state = game_state
+    targeting_item = None
     while True:
         if fov_recompute:
             recompute_fov(fov_map, player.x, player.y, constants['fov_radius'], constants['fov_light_walls'],

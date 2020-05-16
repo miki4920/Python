@@ -108,6 +108,17 @@ def handle_character_screen(key):
     return {}
 
 
+def handle_main_menu(key):
+    if key.sym == 1073741912:
+        return {'new_game': True}
+    elif key.sym == '1073741922':
+        return {'load_game': True}
+    elif key.sym == 1073741923:
+        return {'exit': True}
+
+    return {}
+
+
 def handle_keys(key, game_state):
     if game_state == GameStates.PLAYER_TURN:
         return handle_player_turn_keys(key)

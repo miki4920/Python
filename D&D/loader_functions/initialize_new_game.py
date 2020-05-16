@@ -78,13 +78,10 @@ def get_game_variables(constants):
     player = Entity(0, 0, "@", tcod.white, "Player", blocks=True, render_order=RenderOrder.ACTOR,
                     fighter=fighter_component, inventory=inventory_component, level=level_component)
     game_state = GameStates.PLAYER_TURN
-    previous_game_state = game_state
     entities = [player]
     game_map = GameMap(constants['map_width'], constants['map_height'])
     game_map.make_map(constants['max_rooms'], constants['room_min_size'], constants['room_max_size'],
                       constants['map_width'], constants['map_height'], player, entities,
                       float(player.fighter.cr), constants['max_items_per_room'])
     message_log = MessageLog(constants['message_x'], constants['message_width'], constants['message_height'])
-    targeting_item = None
-
-    return player, entities, game_map, message_log, game_state, previous_game_state, targeting_item
+    return player, entities, game_map, message_log, game_state

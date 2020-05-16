@@ -1,5 +1,5 @@
 import tcod
-
+import numpy
 from game_messages import Message
 
 
