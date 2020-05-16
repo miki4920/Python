@@ -13,7 +13,7 @@ from utility_functions.random_generator import NumberGenerator
 
 def get_constants():
     NumberGenerator().seed()
-    window_title = 'Going Rogue!'
+    window_title = 'Goblins & Caverns'
 
     screen_width = 80
     screen_height = 50

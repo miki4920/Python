@@ -70,7 +70,6 @@ def main():
 
     con.clear()
     play_game(player, entities, game_map, message_log, game_state, con, panel, constants, root_con)
-    show_main_menu = True
 
 
 def play_game(player, entities, game_map, message_log, game_state, con, panel, constants, root_con):

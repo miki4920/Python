@@ -51,7 +51,7 @@ def main_menu(con, background_image, screen_width, screen_height, root):
 
     tcod.console_set_default_foreground(root, tcod.light_yellow)
     tcod.console_print_ex(root, int(screen_width / 2), int(screen_height / 2) - 4, tcod.BKGND_NONE, tcod.CENTER,
-                          'GOBLINS & CAVES')
+                          'GOBLINS & CAVERNS')
     tcod.console_print_ex(root, int(screen_width / 2), int(screen_height - 2), tcod.BKGND_NONE, tcod.CENTER,
                           'By Nicolas Grobelny')
 
