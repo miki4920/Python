@@ -41,7 +41,8 @@ def main():
                   constants['screen_height'], root_con)
 
         if show_load_error_message:
-            message_box(con, 'No save game to load', 50, constants['screen_width'], constants['screen_height'])
+            message_box(con, 'No save game to load', 50, constants['screen_width'], constants['screen_height'],
+                        root_con)
 
         tcod.console_flush()
         action = {}
@@ -67,9 +68,10 @@ def main():
                 show_load_error_message = True
         elif exit_game:
             quit()
-
-    con.clear()
-    play_game(player, entities, game_map, message_log, game_state, con, panel, constants, root_con)
+    else:
+        con.clear()
+        play_game(player, entities, game_map, message_log, game_state, con, panel, constants, root_con)
+        main()
 
 
 def play_game(player, entities, game_map, message_log, game_state, con, panel, constants, root_con):
@@ -195,6 +197,7 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
                 elif game_state == GameStates.TARGETING:
                     player_turn_results.append({'targeting_cancelled': True})
                 else:
+                    save_game(player, entities, game_map, message_log, game_state)
                     return True
 
             if fullscreen:

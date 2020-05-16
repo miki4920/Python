@@ -20,7 +20,8 @@ def menu(con, header, options, width, screen_width, screen_height, root):
     # print all the options
     y = header_height
     letter_index = 1
-    MenuState.menu_state = MenuState.menu_state % len(options)
+    if len(options) > 0:
+        MenuState.menu_state = MenuState.menu_state % len(options)
     for option_index in range(0, len(options)):
         if option_index == MenuState.menu_state and MenuState.menu_state < len(options):
             text = '(' + "X" + ') ' + options[option_index]
@@ -84,5 +85,5 @@ def character_screen(player, character_screen_width, character_screen_height, sc
     tcod.console_blit(window, 0, 0, character_screen_width, character_screen_height, 0, x, y, 1.0, 0.7)
 
 
-def message_box(con, header, width, screen_width, screen_height):
-    menu(con, header, [], width, screen_width, screen_height)
+def message_box(con, header, width, screen_width, screen_height, root):
+    menu(con, header, [], width, screen_width, screen_height, root)

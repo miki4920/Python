@@ -3,7 +3,7 @@ from utility_functions.file_handler import check_existence
 
 
 def save_game(player, entities, game_map, message_log, game_state):
-    with shelve.open('savegame.dat', 'n') as data_file:
+    with shelve.open('savegame', 'n') as data_file:
         data_file['player_index'] = entities.index(player)
         data_file['entities'] = entities
         data_file['game_map'] = game_map
@@ -12,14 +12,17 @@ def save_game(player, entities, game_map, message_log, game_state):
 
 
 def load_game():
-    check_existence("savegame.dat")
-    with shelve.open('savegame.dat', 'r') as data_file:
-        player_index = data_file['player_index']
-        entities = data_file['entities']
-        game_map = data_file['game_map']
-        message_log = data_file['message_log']
-        game_state = data_file['game_state']
+    try:
+        open('savegame.dat', 'r')
+        with shelve.open('savegame', 'r') as data_file:
+            player_index = data_file['player_index']
+            entities = data_file['entities']
+            game_map = data_file['game_map']
+            message_log = data_file['message_log']
+            game_state = data_file['game_state']
 
-    player = entities[player_index]
+        player = entities[player_index]
 
-    return player, entities, game_map, message_log, game_state
+        return player, entities, game_map, message_log, game_state
+    except FileNotFoundError:
+        raise FileNotFoundError

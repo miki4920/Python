@@ -111,9 +111,9 @@ def handle_character_screen(key):
 def handle_main_menu(key):
     if key.sym == 1073741912:
         return {'new_game': True}
-    elif key.sym == '1073741922':
+    elif key.sym == 1073741922:
         return {'load_game': True}
-    elif key.sym == 1073741923:
+    elif key.sym == 27:
         return {'exit': True}
 
     return {}
