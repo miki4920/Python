@@ -1,4 +1,4 @@
-from decimal import Decimal, ROUND_HALF_UP
+from math import ceil
 
 import tcod
 
@@ -51,8 +51,8 @@ class Entity(object):
         dx = target_x - self.x
         dy = target_y - self.y
         distance = max(abs(dx), abs(dy))
-        dx = int(Decimal(dx / distance).to_integral_value(rounding=ROUND_HALF_UP))
-        dy = int(Decimal(dy / distance).to_integral_value(rounding=ROUND_HALF_UP))
+        dx = int(ceil(dx / distance))
+        dy = int(ceil(dy / distance))
         return dx, dy
 
     def move_towards(self, target_x, target_y, game_map, entities):

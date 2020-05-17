@@ -19,10 +19,6 @@ def heal(*args, **kwargs):
     return results
 
 
-def melee_attack(*args, **kwargs):
-    pass
-
-
 def range_attack(*args, **kwargs):
     attack_name = kwargs.get("attack_name")
     entities = kwargs.get('entities')

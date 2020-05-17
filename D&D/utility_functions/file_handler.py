@@ -19,11 +19,6 @@ def safe_open_w(path):
     return open(path, 'w')
 
 
-def check_existence(name):
-    mkdir_p(os.path.dirname(name))
-    return name
-
-
 def write_json(path, content, sorting=False):
     path = get_main_path() + path
     with safe_open_w(path) as file:
@@ -46,12 +41,3 @@ def get_main_path():
     while os.path.basename(os.path.normpath(path)) != "D&D":
         path = path.parent
     return str(path)
-
-
-if __name__ == "__main__":
-    file_path = get_main_path() + "\\data\\monster_cr.json"
-    print(file_path)
-    file_content = {
-        "Monster_CR": [0.125, 0.25, 0.5, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
-                       23, 24, 25, 26, 27, 28, 29, 30]}
-    write_json(file_path, file_content)

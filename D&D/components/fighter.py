@@ -15,25 +15,18 @@ def check_property(item, attribute):
 
 def stat_conversion(statistics):
     for stat in statistics:
-        stat_value = int(statistics[stat])
-        if stat_value > 11:
-            stat_value = int(floor((stat_value - 10) / 2))
-        else:
-            stat_value = -int(floor((11 - stat_value) / 2))
-        statistics[stat] = stat_value
+        statistics[stat] = floor(int(statistics[stat]) / 2) - 5
     return statistics
 
 
-def get_hit_chance(name, finesse, strength, dexterity):
-    if finesse == "Yes":
-        return get_monster_hit_chance(name) + dexterity, dexterity
-    return get_monster_hit_chance(name) + strength, strength
+def get_hit_chance(name, strength, dexterity):
+    bonus = max(strength, dexterity)
+    return get_monster_hit_chance(name) + bonus, bonus
 
 
 class Fighter(object):
     def __init__(self, name):
         monster = get_monster_by_name(name)
-
         description = monster.get("Description")
         self.name = description.get("Name")
         self.statistics = stat_conversion(monster.get("Statistics"))
@@ -46,11 +39,8 @@ class Fighter(object):
         self.cr = attributes.get("CR")
         self.xp = get_monster_xp(self.cr)
         self.speed = attributes.get("Speed")
-
-        properties = monster.get("Properties")
-        self.finesse = properties.get("Finesse")
         self.actions = monster.get("Actions")
-        self.hit, self.damage_bonus = get_hit_chance(name, self.finesse, self.statistics["STR"], self.statistics["DEX"])
+        self.hit, self.damage_bonus = get_hit_chance(name, self.statistics["STR"], self.statistics["DEX"])
 
     def take_damage(self, amount):
         results = []

@@ -135,7 +135,7 @@ def handle_keys(key, game_state):
     return {}
 
 
-def handle_mouse(mouse, game_state):
+def handle_mouse(mouse):
     x, y = mouse.tile
     if mouse.button == tcod.event.BUTTON_LEFT:
         return {'left_click': (x, y)}

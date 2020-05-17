@@ -1,4 +1,4 @@
-from random import randint
+from utility_functions.random_generator import NumberGenerator
 import tcod
 
 
@@ -23,10 +23,10 @@ class SkirmishMonster(object):
         monster = self.owner
         if tcod.map_is_in_fov(fov_map, monster.x, monster.y):
             target_distance = monster.distance_to(target)
-            attack_chance = randint(1, 2)
             if target_distance >= 4:
                 monster.move_astar(target, entities, game_map)
             elif target_distance < 4:
+                attack_chance = NumberGenerator.random_integer(1, 2)
                 if attack_chance < 2 and target.fighter.hp > 0:
                     attack_results = monster.fighter.range_attack(target)
                     results.extend(attack_results)

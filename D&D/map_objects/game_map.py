@@ -1,24 +1,20 @@
-from random import randint
-
 import tcod
 from utility_functions.random_generator import NumberGenerator
 from components.dice import DiceRoll
 from components.fighter import Fighter
 from components.item import Item
 from components.item_functions import heal, range_attack
-from components.stairs import Stairs
 from monster_functions import get_monster_ai, get_monster_arrangement
 from entity import Entity
 from game_messages import Message
-from map_objects.rectangle import Rect
-from map_objects.tile import Tile
+from map_objects.map_classes import *
 from render_functions import RenderOrder
 
 
 def place_monster(room, entities, monster):
     # Choose a random location in the room
-    x = randint(room.x1 + 1, room.x2 - 1)
-    y = randint(room.y1 + 1, room.y2 - 1)
+    x = NumberGenerator.random_integer(room.x1 + 1, room.x2 - 1)
+    y = NumberGenerator.random_integer(room.y1 + 1, room.y2 - 1)
     if not any([entity for entity in entities if entity.x == x and entity.y == y]):
         fighter_component = Fighter(monster)
         ai_component = get_monster_ai(monster)
@@ -28,9 +24,9 @@ def place_monster(room, entities, monster):
 
 
 def place_item(room, entities):
-    item_chance = randint(0, 100)
-    x = randint(room.x1 + 1, room.x2 - 1)
-    y = randint(room.y1 + 1, room.y2 - 1)
+    item_chance = NumberGenerator.random_integer(0, 100)
+    x = NumberGenerator.random_integer(room.x1 + 1, room.x2 - 1)
+    y = NumberGenerator.random_integer(room.y1 + 1, room.y2 - 1)
     if not any([entity for entity in entities if entity.x == x and entity.y == y]):
         if item_chance < 50:
             item_component = Item(use_function=heal, amount="2d4+2")
@@ -58,7 +54,7 @@ def place_item(room, entities):
 def place_entities(room, entities, monster_difficulty, max_items_per_room):
     # Get a random number of monsters
     monsters = get_monster_arrangement(monster_difficulty)
-    number_of_items = randint(0, max_items_per_room)
+    number_of_items = NumberGenerator.random_integer(0, max_items_per_room)
     for monster in monsters:
         monster = place_monster(room, entities, monster)
         if monster:
@@ -88,11 +84,11 @@ class GameMap:
         center_of_last_room_y = None
         for r in range(max_rooms):
             # random width and height
-            w = randint(room_min_size, room_max_size)
-            h = randint(room_min_size, room_max_size)
+            w = NumberGenerator.random_integer(room_min_size, room_max_size)
+            h = NumberGenerator.random_integer(room_min_size, room_max_size)
             # random position without going out of the boundaries of the map
-            x = randint(0, map_width - w - 1)
-            y = randint(0, map_height - h - 1)
+            x = NumberGenerator.random_integer(0, map_width - w - 1)
+            y = NumberGenerator.random_integer(0, map_height - h - 1)
             new_room = Rect(x, y, w, h)
             for other_room in rooms:
                 if new_room.intersect(other_room):
@@ -112,7 +108,7 @@ class GameMap:
                 else:
                     prev_x, prev_y = rooms[num_rooms - 1].center()
                     # flip a coin (random number that is either 0 or 1)
-                    if randint(0, 1) == 1:
+                    if NumberGenerator.random_integer(0, 1) == 1:
                         # first move horizontally, then vertically
                         self.create_h_tunnel(prev_x, new_x, prev_y)
                         self.create_v_tunnel(prev_y, new_y, new_x)

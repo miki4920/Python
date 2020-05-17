@@ -64,7 +64,7 @@ def create_monster():
     name, description = __get_description(["Name", "Size", "Type", "Alignment"])
     cr, attributes = __get_attributes(["HP", "AC", "CR", "Speed"])
     statistics = __get_statistics(["STR", "DEX", "CON", "INT", "WIS", "CHA"])
-    properties = __get_properties(["Finesse", "AI"])
+    properties = __get_properties(["AI"])
     actions = __get_actions(["Name", "Damage", "Range"])
     monster = {"Description": description, "Attributes": attributes, "Statistics": statistics, "Properties": properties,
                "Actions": actions}
@@ -76,8 +76,6 @@ def round_to_nearest(cr):
     monster_cr = read_json("\data\monster_cr.json").get("Monster_CR")
     for i in range(0, len(monster_cr) - 1):
         if monster_cr[i] <= cr < monster_cr[i + 1]:
-            return str(monster_cr[i])
-        elif monster_cr[i] == cr:
             return str(monster_cr[i])
     else:
         return str(monster_cr[0])

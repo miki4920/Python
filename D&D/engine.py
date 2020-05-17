@@ -75,7 +75,6 @@ def main():
 
 
 def play_game(player, entities, game_map, message_log, game_state, con, panel, constants, root_con):
-    # Initiate entities
     tcod.console_set_custom_font("arial10x10.png", tcod.FONT_LAYOUT_TCOD | tcod.FONT_TYPE_GREYSCALE)
     fov_recompute = True
     fov_map = initialize_fov(game_map)
