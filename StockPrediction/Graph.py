@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from matplotlib.dates import MONDAY
-from mpl_finance import candlestick_ohlc
+import mplfinance as mpf
 import datetime
 
 
@@ -48,7 +48,7 @@ class Graph(object):
 
     def candle_graph(self):
         # Creates a candlestick graph
-        candlestick_ohlc(self.axis, zip(self.date,
+        mpf.plot(self.axis, zip(self.date,
                          self.data[' Open'], self.data[' High'],
                          self.data[' Low'], self.data[' Close']), width=0.6, colorup='g')
         # Creates an arrow point to the last price
