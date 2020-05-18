@@ -398,14 +398,6 @@ class Interface(object):
         # Creation of radio button
         machine_learning_button = tk.Radiobutton(self.master, variable=self.prediction_type, value=2)
         machine_learning_button.grid(row=12, column=53)
-        # Sentiment Analysis
-        # Label
-        sentiment_analysis = tk.Label(self.master, text="Twitter Scan:", width=11)
-        sentiment_analysis.grid(row=13, column=52, columnspan=2, sticky="W")
-        # Creation of radio button
-        sentiment_analysis_button = tk.Radiobutton(self.master, variable=self.prediction_type, value=3)
-        sentiment_analysis_button.grid(row=13, column=53)
-        # Default value
         self.prediction_type.set(1)
 
     def right_prediction_type(self):
@@ -497,27 +489,21 @@ class Interface(object):
             end_date = self.end_month.get() + "/" + self.end_day.get() + "/" + self.end_year.get()
             # Initiates import module
             stock_name = self.stock_name.get()
-            # Imports data either within the boundary specified by user or up to today
             if self.prediction_type.get() == 1:
                 import_module = Import(stock_name, start_date, end_date)
             else:
                 import_module = Import(stock_name, start_date, datetime.datetime.today().strftime('%m/%d/%Y'))
-                # Imports tweets
-                if self.prediction_type.get() == 3:
-                    import_module.import_tweets()
-                    # Cleans them up (Removes unnecessary data)
-                    tokens = import_module.clean_tweets()
             # Imports data
             data = import_module.import_data()
             # Drops columns which are not required
             if not self.open.get():
-                data.drop([" Open"], axis=1, inplace=True)
+                data.drop(["Open"], axis=1, inplace=True)
             if not self.high.get():
-                data.drop([" High"], axis=1, inplace=True)
+                data.drop(["High"], axis=1, inplace=True)
             if not self.low.get():
-                data.drop([" Low"], axis=1, inplace=True)
+                data.drop(["Low"], axis=1, inplace=True)
             if not self.close.get():
-                data.drop([" Close"], axis=1, inplace=True)
+                data.drop(["Close"], axis=1, inplace=True)
             # Predicts future prices
             if self.prediction_type.get() != 1:
                 # Calculated a number of days between current date and future
@@ -528,14 +514,9 @@ class Interface(object):
                 # Predicts using machine learning
                 if self.prediction_type.get() == 2:
                     prediction_module.machine_learning_prediction()
-                else:
-                    # Predicts using tweets
-                    prediction_module.sentiment_analysis_prediction()
                 # Generates dates
                 prediction_module.date_generator()
                 data = prediction_module.manage_dataframe()
-            elif self.prediction_type.get() == 3:
-                pass
             # Initiates graph module
             graph_module = Graph(stock_name, data)
             # Convert dates to numerical values

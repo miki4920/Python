@@ -31,7 +31,7 @@ class Graph(object):
 
     def convert_dates(self):
         # Iterates through dates
-        for day in self.data["Date"]:
+        for day in self.data.index:
             # Converts dates into datetime format
             self.date.append(mdates.date2num(datetime.datetime.strptime(day, "%m/%d/%y")))
         # Removes dates column from the main data frame
