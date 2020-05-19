@@ -1,9 +1,4 @@
-import pandas as pd
 import datetime
-import csv
-import tweepy
-import string
-from nltk.corpus import stopwords
 import quandl
 
 
@@ -25,5 +20,7 @@ class Import(object):
     def import_data(self):
         # Imports data
         stock_data = quandl.get(f'EURONEXT/{self.stock_name}', start_date=self.start_date, end_date=self.end_date)
-        stock_data = stock_data.drop(['Volume', 'Turnover'], axis=1, inplace=True)
+        stock_data.drop(['Volume', 'Turnover'], axis=1, inplace=True)
+        stock_data.rename(columns={"Last": "Close"}, inplace=True)
+        stock_data = stock_data[["Open", "Close", "Low", "High"]]
         return stock_data

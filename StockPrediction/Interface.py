@@ -438,22 +438,22 @@ class Interface(object):
     def reset_command(self):
         # Resets everything to default
         # Resets entry box for stock
-        self.stock_name.set("")
+        self.stock_name.set("ADYEN")
         # Resets start date
-        self.start_day.set("")
-        self.start_month.set("")
-        self.start_year.set("")
+        self.start_day.set("12")
+        self.start_month.set("12")
+        self.start_year.set("2019")
         # Resets end date
-        self.end_day.set("")
-        self.end_month.set("")
-        self.end_year.set("")
+        self.end_day.set("12")
+        self.end_month.set("06")
+        self.end_year.set("2020")
         # Resets data types
-        self.open.set(0)
-        self.close.set(0)
-        self.high.set(0)
-        self.low.set(0)
+        self.open.set(1)
+        self.close.set(1)
+        self.high.set(1)
+        self.low.set(1)
         # Resets prediction type
-        self.prediction_type.set(1)
+        self.prediction_type.set(2)
         # Resets graph type
         self.graph_type.set("Candle")
         # Resets colours
@@ -484,15 +484,14 @@ class Interface(object):
         # Running the program
         if valid:
             self.right_run()
-            # Puts date together in format MM/DD/YYYY
-            start_date = self.start_month.get() + "/" + self.start_day.get() + "/" + self.start_year.get()
-            end_date = self.end_month.get() + "/" + self.end_day.get() + "/" + self.end_year.get()
+            start_date = self.start_year.get() + "-" + self.start_month.get() + "-" + self.start_day.get()
+            end_date = self.end_year.get() + "-" + self.end_month.get() + "-" + self.end_day.get()
             # Initiates import module
             stock_name = self.stock_name.get()
             if self.prediction_type.get() == 1:
                 import_module = Import(stock_name, start_date, end_date)
             else:
-                import_module = Import(stock_name, start_date, datetime.datetime.today().strftime('%m/%d/%Y'))
+                import_module = Import(stock_name, start_date, datetime.datetime.today().strftime('%Y-%m-%d'))
             # Imports data
             data = import_module.import_data()
             # Drops columns which are not required
@@ -507,20 +506,17 @@ class Interface(object):
             # Predicts future prices
             if self.prediction_type.get() != 1:
                 # Calculated a number of days between current date and future
-                days = datetime.datetime.strptime(end_date, '%m/%d/%Y') - datetime.datetime.today()
+                days = datetime.datetime.strptime(end_date, '%Y-%m-%d') - datetime.datetime.today()
                 days = days.days + 1
-                # Initiates prediction module
+
                 prediction_module = Prediction(data, days)
-                # Predicts using machine learning
-                if self.prediction_type.get() == 2:
-                    prediction_module.machine_learning_prediction()
-                # Generates dates
+                prediction_module.machine_learning_prediction()
+
                 prediction_module.date_generator()
                 data = prediction_module.manage_dataframe()
             # Initiates graph module
             graph_module = Graph(stock_name, data)
             # Convert dates to numerical values
-            graph_module.convert_dates()
             # Stores graph type in a variable
             graph = self.graph_type.get()
             # Initiates appropriate graph
@@ -535,7 +531,8 @@ class Interface(object):
             elif graph == "Bar":
                 graph_module.bar_graph()
             # Starts the graph
-            graph_module.start_graph()
+            if graph != "Candle":
+                graph_module.start_graph()
         else:
             self.wrong_run()
 

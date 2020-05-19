@@ -2,7 +2,6 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from matplotlib.dates import MONDAY
 import mplfinance as mpf
-import datetime
 
 
 class Graph(object):
@@ -14,7 +13,7 @@ class Graph(object):
         # Creates an axis
         self.axis = plt.subplot2grid((1, 1), (0, 0))
         # Formats date to DD-MM-YYYY format
-        self.axis.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m-%Y'))
+        self.axis.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
         # Identifies months and mondays, ensuring apprioprate ticks would be created
         self.months = mdates.MonthLocator(range(1, 13), bymonthday=1, interval=1)
         self.mondays = mdates.WeekdayLocator(MONDAY)
@@ -26,59 +25,32 @@ class Graph(object):
         self.stock_name = stock_name
         self.data = data
         self.date = []
-        # Creates an arrow pointing to the last price
-        self.bbox_props = dict(boxstyle='larrow', fc='w', ec='k', lw=1)
-
-    def convert_dates(self):
-        # Iterates through dates
-        for day in self.data.index:
-            # Converts dates into datetime format
-            self.date.append(mdates.date2num(datetime.datetime.strptime(day, "%m/%d/%y")))
-        # Removes dates column from the main data frame
-        self.data.drop(["Date"], axis=1, inplace=True)
 
     def linear_graph(self):
         # Iterates through data columns
         for column in self.data:
-            # Plots each column, creating a legend as well
-            plt.plot_date(self.date, self.data[column], "-", label=column)
-            # Annotates it with an arrow, regarding the last price
-            self.axis.annotate(str(round(self.data[column][0], 2)), (self.date[0], self.data[column][0]),
-                               xytext=(self.date[0] + round(len(self.date)/20), self.data[column][0]), bbox=self.bbox_props)
+            # Plots each column, creating a legend 0as well
+            plt.plot_date(self.data.index, self.data[column], "-", label=column)
 
     def candle_graph(self):
         # Creates a candlestick graph
-        mpf.plot(self.axis, zip(self.date,
-                         self.data[' Open'], self.data[' High'],
-                         self.data[' Low'], self.data[' Close']), width=0.6, colorup='g')
-        # Creates an arrow point to the last price
-        self.axis.annotate(str(round(self.data[' Close'][0], 2)), (self.date[0], self.data[' Close'][0]),
-                           xytext=(self.date[0] + round(len(self.date) / 20), self.data[' Close'][0]),
-                           bbox=self.bbox_props)
+        mc = mpf.make_marketcolors(up='g', down='r')
+        s = mpf.make_mpf_style(marketcolors=mc)
+        mpf.plot(self.data, type="candle", style=s, title=self.stock_name, ylabel='OHLC Candles')
 
     def bar_graph(self):
         # Create bars with low and high prices,
-        plt.bar(self.date, 10, width=1, bottom=self.data[' High'].apply(lambda x: x-10), label='High')
-        plt.bar(self.date, 10, width=1, bottom=self.data[' Low'].apply(lambda x: x-10), label='Low')
-        # Annotates it with an arrow, regarding the last price
-        self.axis.annotate(str(round(self.data[' High'][0], 2)), (self.date[0], self.data[' High'][0]),
-                           xytext=(self.date[0] + round(len(self.date)/20), self.data[' High'][0]), bbox=self.bbox_props)
+        plt.bar(self.data.index, 10, width=1, bottom=self.data['High'].apply(lambda x: x-10), label='High')
+        plt.bar(self.data.index, 10, width=1, bottom=self.data['Low'].apply(lambda x: x-10), label='Low')
 
     def area_graph(self):
         # Fills the area between low price line and high price line
-        plt.fill_between(self.date, self.data[' High'], self.data[' Low'], label="High-Low")
-        # Annotates the last high price
-        self.axis.annotate(str(round(self.data[' High'][0], 2)), (self.date[0], self.data[' High'][0]),
-                           xytext=(self.date[0] + round(len(self.date) / 20), self.data[' High'][0]),
-                           bbox=self.bbox_props)
+        plt.fill_between(self.data.index, self.data['High'], self.data['Low'], label="High-Low")
 
     def scatter_graph(self):
         for column in self.data:
             # Plots each column, creating a legend as well
-            plt.scatter(self.date, self.data[column], s=2, label=column)
-            # Annotates it with an arrow, regarding the last price
-            self.axis.annotate(str(round(self.data[column][0], 2)), (self.date[0], self.data[column][0]),
-                               xytext=(self.date[0] + round(len(self.date)/20), self.data[column][0]), bbox=self.bbox_props)
+            plt.scatter(self.data.index, self.data[column], s=2, label=column)
 
     def start_graph(self):
         # Gets all x axis labels
