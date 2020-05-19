@@ -12,7 +12,8 @@ class Import(object):
 
     def stock_check(self):
         try:
-            data = quandl.get(f'EURONEXT/{self.stock_name}', start_date='2000-01-01', end_date=datetime.datetime.today().strftime('%Y-%m-%d'), limit=10)
+            quandl.get(f'EURONEXT/{self.stock_name}', start_date='2000-01-01',
+                       end_date=datetime.datetime.today().strftime('%Y-%m-%d'), limit=10)
             return True
         except quandl.NotFoundError:
             return False

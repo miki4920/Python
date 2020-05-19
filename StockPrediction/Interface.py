@@ -64,7 +64,7 @@ class Interface(object):
         scale = 0.5
         # Gets size of the screen
         resolution = pyautogui.size()
-        resolution = [round(dimension*scale) for dimension in resolution]
+        resolution = [round(dimension * scale) for dimension in resolution]
         # Converts resolution into the format accepted by the program
         resolution = "%sx%s" % (resolution[0], resolution[1])
         self.master.geometry(resolution)
@@ -160,8 +160,9 @@ class Interface(object):
     def check_date_and_prediction(self):
         # Sets us try-except block
         try:
-            # Tries to create a datetime object, function would throw out a Value error is the date is not viable (Example - 30th of February)
-            start = datetime.datetime(int(self.start_year.get()), int(self.start_month.get()), int(self.start_day.get()))
+            # Tries to create a datetime object, function would throw out a Value error is the date is not viable
+            start = datetime.datetime(int(self.start_year.get()), int(self.start_month.get()),
+                                      int(self.start_day.get()))
             end = datetime.datetime(int(self.end_year.get()), int(self.end_month.get()), int(self.end_day.get()))
             # Checks whether the starting date happened earlier than the end date
             if end < start:
@@ -345,21 +346,19 @@ class Interface(object):
         high = self.high.get()
         low = self.low.get()
         # Checks whether at least one data type was selected
-        if not (open or close or high or low):
+        if low+close+high+open == 0:
             pass
         # Checks whether all datatypes were selected for a candle graph
-        elif not (open and close and high and low) and self.graph_type.get() == "Candle":
+        elif low+close+high+open != 4 and self.graph_type.get() == "Candle":
             pass
         # Checks whether only one data type selected for linear or scatter graph
-        elif not (((open and not close and not high and not low) or
-                  (not open and close and not high and not low) or
-                  (not open and not close and high and not low) or
-                  (not open and not close and not high and low)) and self.prediction_type.get() != 2) and \
-                  (self.graph_type.get() == "Linear"
-                  or self.graph_type.get() == "Scatter"):
+        elif open+close+high+low != 1 and self.prediction_type.get() != 2 and \
+                (self.graph_type.get() == "Linear"
+                 or self.graph_type.get() == "Scatter"):
             pass
         # Checks whether low and high selected when dealing with bar or area graphs
-        elif not (low and high and not open and not close) and (self.graph_type.get() == "Bar" or self.graph_type.get() == "Area"):
+        elif not (low and high and not open and not close) and (
+                self.graph_type.get() == "Bar" or self.graph_type.get() == "Area"):
             pass
         else:
             self.right_data_type()

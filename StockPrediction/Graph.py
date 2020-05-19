@@ -8,8 +8,6 @@ class Graph(object):
     def __init__(self, stock_name, data):
         # Imports a style
         plt.style.use("seaborn")
-        # Creates a figure (window) for the graph
-        self.fig = plt.figure()
         # Creates an axis
         self.axis = plt.subplot2grid((1, 1), (0, 0))
         # Formats date to DD-MM-YYYY format
