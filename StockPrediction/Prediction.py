@@ -15,11 +15,8 @@ class Prediction(object):
     def machine_learning_prediction(self):
         # Iterate through columns
         for column in self.data:
-            # Make x a single column
             x = self.data.drop(column, 1)
-            # Store rest of the columns in y
             y = self.data[column]
-            # Create a linear regression class
             predictor = LinearRegression(n_jobs=-1)
             # Trains the predictor
             predictor.fit(x, y)
