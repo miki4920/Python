@@ -1,11 +1,3 @@
-A = [2, 7]
-B = [10, 1]
-C = [8, 6]
-D = [11, 7]
-E = [7, 10]
-list_of_vertices = [A, B, C, D, E]
-
-
 def get_x(vertices):
     x = []
     for vertex in vertices:

@@ -506,7 +506,10 @@ class Interface(object):
             if self.prediction_type.get() != 1:
                 # Calculated a number of days between current date and future
                 days = datetime.datetime.strptime(end_date, '%Y-%m-%d') - datetime.datetime.today()
-                days = days.days + 1
+                if days.days > 30:
+                     days = 31
+                else:
+                    days = days.days + 1
 
                 prediction_module = Prediction(data, days)
                 prediction_module.machine_learning_prediction()

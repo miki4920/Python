@@ -57,28 +57,6 @@ def hexary_denary(number):
         output+=16**i*value_list.index(number[i])
     return output
 
-def adding_table_denary(first_number, second_number):
-    output = str(first_number+second_number)
-    first_number = str(first_number)[::-1]
-    second_number = str(second_number)[::-1]
-    carry = 0
-    carried = False
-    first_number = first_number+"0"*(len(output)-len(first_number))
-    second_number = second_number+"0"*(len(output)-len(second_number))
-    for i in range(0, len(first_number)):
-        digit_one = int(first_number[i])
-        digit_two = int(second_number[i])
-        digit_one+= 1*carried
-        carried = False
-        if (digit_one+digit_two)//10==1:
-            carry+=10**(i+1)
-            carried = True
-    carry = "0"*(len(output)-len(str(carry))) + str(carry)
-    print(first_number[::-1])
-    print(second_number[::-1])
-    print(carry)
-    print(output)
-
 def negate_number(number):
     output = 0
     length = len(number)
@@ -91,22 +69,6 @@ def negate_number(number):
     output = bin(output & 0xffffffff)[::-1][0:length][::-1]
     return output
 
-def russian_roulette():
-        value = 0
-        count = 0
-        while True:
-                user = input("Do you want to give it a try? ")
-                if user.lower() == "no":
-                    break
-                else:
-                    value = random.randint(1,6)
-                    count += 1
-                    if value == 6:
-                        break
-                    else:
-                        print("Well done, you survived")
-        print("Dead")
-        return f"Your result was {count}, well done"
 
 def check_magical_square(table):
     diagonal_1 = []
@@ -141,26 +103,3 @@ def generate_anagrams(word):
         temp_list = []
     return output
             
-def draw_turtle_house(size):
-    screen = turtle.Screen()
-    reza = turtle.Turtle()
-    reza.speed(0)
-    for i in range(0, 3):       
-        reza.forward(size)
-        reza.right(90)
-    reza.forward(size)
-    reza.right(45)
-    reza.forward(math.sqrt(2*(size/2)**2))
-    reza.right(90)
-    reza.forward(math.sqrt(2*(size/2)**2))
-    reza.right(45)
-    reza.forward(size)
-    reza.right(90)
-    reza.forward((1.2*size)/2)
-    for i in range(0, 3):
-        reza.right(90)
-        reza.forward(size*0.2)
-    
-
-draw_turtle_house(100)
-    
