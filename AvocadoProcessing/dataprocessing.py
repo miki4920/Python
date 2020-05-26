@@ -18,6 +18,7 @@ for region in regions:
         graph_df = region_df[[f"{region}_price25ma"]]  # note the double square brackets! (so df rather than series)
     else:
         graph_df = graph_df.join(region_df[f"{region}_price25ma"])
+graph_df = graph_df.dropna()
 
-graph_df.plot(figsize=(8, 5), legend=False)
+graph_df.plot(legend=False)
 mtp.show()
