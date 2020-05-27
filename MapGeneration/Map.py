@@ -115,7 +115,6 @@ class MapGenerator(object):
 
 
 size = 256
-start = time.time()
 values = [(x/size, y/size) for x in range(0, size) for y in range(0, size)]
 noise_generator = PerlinNoise(6, persistence=1.4, frequency_factor=1.6)
 noise_values = list(map(noise_generator, values))
@@ -124,5 +123,3 @@ map_values = map_generator()
 image = Image.new("RGB", (size, size))
 image.putdata(map_values, 128, 128)
 image.save("map.png")
-end = time.time()
-print("time: " + str(end-start))
